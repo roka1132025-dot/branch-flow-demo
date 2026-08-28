@@ -144,7 +144,7 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
   <div class="section-title">إدارة المنتجات والمخزون</div>
   <div class="alert">من هنا يمكنك إضافة منتج جديد أو تعديل السعر والكميات داخل نسخة الديمو.</div>
   <div id="productManager" class="list"></div>
-  <button class="btn primary" onclick="openProductEditor()">+ إضافة منتج</button>
+  <button class="btn primary wide" style="margin-top:10px" onclick="openProductEditor()">+ إضافة منتج جديد</button>
 </section>
 
 <div class="note" style="margin-top:14px;text-align:center">نموذج مستقل لأغراض العرض فقط — غير تابع أو معتمد من أي متجر. جميع أسماء الموظفات والمنتجات والكميات والأسعار والفروع والبيانات المعروضة تجريبية.</div>
@@ -361,7 +361,7 @@ function openProductEditor(id=null){
  document.getElementById("peSku").value=p?p.sku:"";
  document.getElementById("peCat").value=p?p.cat:"عناية";
  document.getElementById("pePrice").value=p?p.price:"";
- document.getElementById("peIcon").value=p?p.icon:"✨";
+ document.getElementById("peIcon").value=p?(p.emoji||p.icon||"✨"):"✨";
  let ks=p?Object.keys(p.stock):["الفرع الأول","الفرع الثاني","الفرع الثالث"];
  document.getElementById("peB1").value=p?p.stock[ks[0]]:0;
  document.getElementById("peB2").value=p?p.stock[ks[1]]:0;
@@ -372,9 +372,10 @@ function saveProductEditor(){
  let name=document.getElementById("peName").value.trim(), sku=document.getElementById("peSku").value.trim();
  if(!name||!sku){toast("أدخل اسم المنتج والكود");return}
  let id=document.getElementById("peId").value?Number(document.getElementById("peId").value):(Math.max(0,...products.map(p=>p.id))+1);
- let stock={"الفرع الأول":Number(document.getElementById("peB1").value||0),"الفرع الثاني":Number(document.getElementById("peB2").value||0),"الفرع الثالث":Number(document.getElementById("peB3").value||0)};
+ if(products.some(p=>String(p.sku).toLowerCase()===sku.toLowerCase()&&p.id!==id)){toast("هذا الكود مستخدم لمنتج آخر");return}
+ let stock={"الفرع الأول":Math.max(0,Number(document.getElementById("peB1").value||0)),"الفرع الثاني":Math.max(0,Number(document.getElementById("peB2").value||0)),"الفرع الثالث":Math.max(0,Number(document.getElementById("peB3").value||0))};
  let existing=products.find(p=>p.id===id);
- let obj={id,name,sku,cat:document.getElementById("peCat").value,price:Number(document.getElementById("pePrice").value||0),icon:document.getElementById("peIcon").value||"✨",stock};
+ let obj={id,name,sku,cat:document.getElementById("peCat").value,price:Number(document.getElementById("pePrice").value||0),emoji:document.getElementById("peIcon").value||"✨",stock};
  if(existing) Object.assign(existing,obj); else products.push(obj);
  saveProducts(); closeModal("productEditorModal"); refresh(); renderProductManager(); toast("تم حفظ المنتج");
 }
@@ -391,6 +392,7 @@ function dashboard(){
  let top={};reservations.forEach(x=>top[x.branch]=(top[x.branch]||0)+1);let topB=Object.keys(top).sort((a,b)=>top[b]-top[a])[0]||"لا بيانات";
  smartSummary.textContent=`يوجد ${pending} حجز بانتظار الاستلام. أكثر فرع نشاطًا في بيانات الديمو: ${topB}. ويوجد ${lowCount()} حالة مخزون منخفض أو صفر عبر الفروع.`;
  renderOperationLog();
+ renderProductManager();
  drawChart();
 }
 function renderOperationLog(){
