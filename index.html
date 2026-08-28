@@ -179,7 +179,7 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
 
 <script>
 const BR=["الفرع الأول","الفرع الثاني","الفرع الثالث"];
-const products=[
+const defaultProducts=[
 {id:1,sku:"DEMO-001",name:"واقي شمس SPF50+",cat:"عناية",emoji:"☀️",price:28000,stock:{"الفرع الأول":8,"الفرع الثاني":3,"الفرع الثالث":6}},
 {id:2,sku:"DEMO-002",name:"سيروم ترطيب للوجه",cat:"عناية",emoji:"💧",price:24000,stock:{"الفرع الأول":2,"الفرع الثاني":7,"الفرع الثالث":4}},
 {id:3,sku:"DEMO-003",name:"فاونديشن - درجة متوسطة",cat:"مكياج",emoji:"💄",price:42000,stock:{"الفرع الأول":5,"الفرع الثاني":1,"الفرع الثالث":0}},
@@ -189,6 +189,8 @@ const products=[
 {id:7,sku:"DEMO-007",name:"ماسكارا تكثيف",cat:"مكياج",emoji:"🖤",price:17000,stock:{"الفرع الأول":1,"الفرع الثاني":5,"الفرع الثالث":7}},
 {id:8,sku:"DEMO-008",name:"إيسنس ترطيب",cat:"عناية",emoji:"✨",price:23000,stock:{"الفرع الأول":6,"الفرع الثاني":2,"الفرع الثالث":1}}
 ];
+let products=JSON.parse(localStorage.getItem("branchFlowProducts")||"null");
+if(!Array.isArray(products)||!products.length) products=JSON.parse(JSON.stringify(defaultProducts));
 let currentCat="all", selectedProduct=null;
 let reservations=JSON.parse(localStorage.getItem("hudaProReservations")||"[]");
 let transfers=JSON.parse(localStorage.getItem("hudaProTransfers")||"[]");
@@ -241,13 +243,16 @@ function renderProducts(){
  }
  document.getElementById("sProducts").textContent=products.length;
  document.getElementById("sStock").textContent=products.reduce((s,p)=>s+total(p),0);
- document.getElementById("sRes").textContent=reservations.length;
+ document.getElementById("sRes").textContent=reservations.filter(r=>r.status!=="تم الاستلام").length;
  document.getElementById("sLow").textContent=lowCount();
 }
 function reserve(id){
  selectedProduct=products.find(p=>p.id===id);let sel=document.getElementById("reserveBranch");sel.innerHTML="";
  BR.filter(b=>selectedProduct.stock[b]>0).forEach(b=>sel.innerHTML+=`<option>${b}</option>`);
  document.getElementById("reserveTitle").textContent="حجز: "+selectedProduct.name;openModal("reserveModal");
+}
+function saveProducts(){
+  localStorage.setItem("branchFlowProducts",JSON.stringify(products));
 }
 function logOperation(type, product, branchName, extra=""){
   operations.unshift({id:Date.now()+Math.random(),employee:document.getElementById("employee").value,type,product,branch:branchName,extra,ts:new Date().toISOString()});
@@ -259,16 +264,41 @@ function formatTime(ts){
 }
 function saveReservation(){
  let name=customer.value.trim(), ph=phone.value.trim(), br=reserveBranch.value;
- if(!name||!ph){toast("أدخلي اسم الزبونة ورقم الهاتف");return}
- reservations.unshift({id:Date.now(),product:selectedProduct.name,sku:selectedProduct.sku,branch:br,name,phone:ph,note:reserveNote.value,status:"بانتظار الاستلام",employee:employee.value,ts:new Date().toISOString()});
- localStorage.setItem("hudaProReservations",JSON.stringify(reservations));logOperation("حجز",selectedProduct.name,br,`للزبونة ${name}`);closeModal("reserveModal");customer.value=phone.value=reserveNote.value="";refresh();toast("تم تسجيل الحجز ✓");
+ if(!name||!ph){toast("أدخل اسم الزبونة ورقم الهاتف");return}
+ let p=products.find(x=>x.id===selectedProduct.id);
+ if(!p||p.stock[br]<=0){toast("المنتج غير متوفر في هذا الفرع");return}
+ p.stock[br]-=1;
+ reservations.unshift({id:Date.now(),product:selectedProduct.name,sku:selectedProduct.sku,branch:br,name,phone:ph,note:reserveNote.value,status:"بانتظار الاستلام",employee:employee.value,ts:new Date().toISOString(),stockReserved:true});
+ saveProducts();
+ localStorage.setItem("hudaProReservations",JSON.stringify(reservations));
+ logOperation("حجز",selectedProduct.name,br,`للزبونة ${name} • تم حجز قطعة من المخزون`);
+ closeModal("reserveModal");customer.value=phone.value=reserveNote.value="";refresh();toast("تم تسجيل الحجز وحجز قطعة من المخزون ✓");
 }
 function renderReservations(){
  orders.innerHTML=reservations.length?"":"<div class='alert'>لا توجد حجوزات تجريبية بعد.</div>";
  reservations.forEach(o=>orders.innerHTML+=`<div class="item"><div class="item-top"><b>${o.product}</b><span class="pill ${o.status==="تم الاستلام"?"done":"pending"}">${o.status}</span></div><div class="meta">${o.name} • ${o.phone} • ${o.branch}</div><div class="meta"><b>نفذت الحجز:</b> ${o.employee||"موظفة تجريبية"}</div>${o.note?`<div class="note">${o.note}</div>`:""}<div class="actions"><button class="btn secondary" onclick="markDone(${o.id})">تم الاستلام</button><button class="btn outline" onclick="whatsCustomer(${o.id})">رسالة للزبونة</button><button class="btn danger" onclick="deleteRes(${o.id})">حذف</button></div></div>`);
 }
-function markDone(id){let x=reservations.find(r=>r.id===id);x.status="تم الاستلام";logOperation("إتمام حجز",x.product,x.branch,`استلام ${x.name}`);saveAll()}
-function deleteRes(id){reservations=reservations.filter(r=>r.id!==id);saveAll()}
+function markDone(id){
+ let x=reservations.find(r=>r.id===id); if(!x)return;
+ if(x.status==="تم الاستلام"){toast("هذا الحجز مستلم بالفعل");return}
+ if(!x.stockReserved){
+   let p=products.find(p=>p.sku===x.sku);
+   if(p&&p.stock[x.branch]>0){p.stock[x.branch]-=1;saveProducts();x.stockReserved=true}
+ }
+ x.status="تم الاستلام";
+ logOperation("إتمام حجز",x.product,x.branch,`استلام ${x.name}`);
+ saveAll();
+}
+function deleteRes(id){
+ let x=reservations.find(r=>r.id===id); if(!x)return;
+ if(x.status!=="تم الاستلام"&&x.stockReserved){
+   let p=products.find(p=>p.sku===x.sku);
+   if(p){p.stock[x.branch]+=1;saveProducts()}
+   logOperation("إلغاء حجز",x.product,x.branch,`أعيدت قطعة للمخزون • ${x.name}`);
+ }
+ reservations=reservations.filter(r=>r.id!==id);
+ saveAll();
+}
 function whatsCustomer(id){let o=reservations.find(r=>r.id===id);let txt=`مرحباً ${o.name} 🌸 تم تثبيت حجز ${o.product} في فرع ${o.branch}.`;navigator.clipboard?.writeText(txt);toast("تم نسخ رسالة الزبونة")}
 function copyReply(id){
  let p=products.find(x=>x.id===id),br=branch.value;
@@ -341,7 +371,7 @@ function showPanel(id){
 function openModal(id){document.getElementById(id).classList.add("show")}
 function closeModal(id){document.getElementById(id).classList.remove("show")}
 function toast(t){let x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",1700)}
-function saveAll(){localStorage.setItem("hudaProReservations",JSON.stringify(reservations));localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));localStorage.setItem("branchFlowOperations",JSON.stringify(operations));refresh()}
+function saveAll(){saveProducts();localStorage.setItem("hudaProReservations",JSON.stringify(reservations));localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));localStorage.setItem("branchFlowOperations",JSON.stringify(operations));refresh()}
 function refresh(){renderProducts();renderReservations();renderTransfers();renderAlerts();dashboard();applyRole()}
 function applyRole(){}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentCat=b.dataset.cat;renderProducts()});
