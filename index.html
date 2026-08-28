@@ -51,6 +51,22 @@ header{padding:12px}.brand{font-size:15px}.sub{font-size:8.5px}.role{max-width:9
 main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:18px}
 .toolbar{grid-template-columns:1fr 112px}.stats{gap:5px}.stat b{font-size:15px}
 }
+
+/* v5 mobile modal + admin inventory controls */
+.modal{align-items:flex-end;padding:12px;overflow:auto}
+.modalbox{max-height:calc(100dvh - 84px);overflow:auto;overscroll-behavior:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+@media (max-width:560px){
+  .modal{padding:0;align-items:flex-end}
+  .modalbox{width:100%;max-width:none;border-radius:24px 24px 0 0;max-height:88dvh;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
+}
+.stock-adjust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.stock-adjust{border:1px solid var(--line);border-radius:14px;padding:9px 7px;background:#fafafa;text-align:center}
+.stock-adjust b{display:block;margin-bottom:6px}
+.stock-adjust .minirow{display:grid;grid-template-columns:36px 1fr 36px;gap:5px;align-items:center}
+.stock-adjust button{min-height:36px;border:1px solid var(--line);border-radius:10px;background:white;font-size:20px}
+.stock-adjust .qty{font-weight:800;font-size:18px}
+@media (max-width:430px){.stock-adjust-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -210,7 +226,7 @@ function lowCount(){
  let c=0;
  products.forEach(p=>{
   let threshold=(p.lowThreshold??3);
-  Object.values(p.stock).forEach(q=>{if(q<=threshold)c++});
+  Object.values(p.stock).forEach(q=>{if(Number(q)<=threshold)c++});
  });
  return c;
 }
@@ -352,24 +368,44 @@ function renderAlerts(){
  if(!alertsList.innerHTML)alertsList.innerHTML="<div class='alert green'>لا توجد تنبيهات حرجة حاليًا.</div>";
 }
 
+function adjustStockDirect(id,branch,delta){
+ let p=products.find(x=>x.id===id); if(!p || !(branch in p.stock)) return;
+ let before=Number(p.stock[branch]||0);
+ let after=Math.max(0,before+delta);
+ if(after===before) return;
+ p.stock[branch]=after;
+ saveProducts();
+ logOperation("تعديل مخزون",p.name,branch,`${before} ← ${after}`);
+ refresh();
+ renderProductManager();
+ toast(`${p.name} • ${branch}: ${after}`);
+}
+
 function renderProductManager(){
  let box=document.getElementById("productManager"); if(!box)return;
- box.innerHTML="";
- products.forEach(p=>{
-  let total=Object.values(p.stock).reduce((a,b)=>a+b,0);
-  let ks=Object.keys(p.stock);
-  box.innerHTML+=`<div class="item">
-   <div class="item-top"><b>${p.name}</b><span class="pill">${p.sku}</span></div>
-   <div class="meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${p.lowThreshold??3}</div>
-   <div class="stockline"><span class="chip">${ks[0]}: ${p.stock[ks[0]]}</span><span class="chip">${ks[1]}: ${p.stock[ks[1]]}</span><span class="chip">${ks[2]}: ${p.stock[ks[2]]}</span></div>
+ box.innerHTML=products.map(p=>{
+  let total=Object.values(p.stock).reduce((a,b)=>a+Number(b||0),0);
+  let branchControls=Object.entries(p.stock).map(([br,q])=>`
+   <div class="stock-adjust">
+    <b>${br}</b>
+    <div class="minirow">
+     <button type="button" onclick="adjustStockDirect(${p.id},'${br}',-1)">−</button>
+     <span class="qty">${q}</span>
+     <button type="button" onclick="adjustStockDirect(${p.id},'${br}',1)">+</button>
+    </div>
+   </div>`).join("");
+  return `<div class="card">
+   <div class="row">
+    <div><h3>${p.name}</h3><div class="meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${p.lowThreshold??3}</div></div>
+    <span class="sku">${p.sku}</span>
+   </div>
+   <div class="stock-adjust-grid">${branchControls}</div>
    <div class="actions">
     <button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button>
-    <button class="btn outline" onclick="quickStock(${p.id},1)">+1 مخزون</button>
-    <button class="btn outline" onclick="quickStock(${p.id},-1)">-1 مخزون</button>
     <button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button>
    </div>
   </div>`;
- });
+ }).join("");
 }
 function openProductEditor(id=null){
  let p=id?products.find(x=>x.id===id):null;
