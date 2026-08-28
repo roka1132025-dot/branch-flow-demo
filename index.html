@@ -141,6 +141,10 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
   <div id="smartSummary" class="alert green"></div>
   <div class="section-title">سجل العمليات</div>
   <div id="operationLog" class="list"></div>
+  <div class="section-title">إدارة المنتجات والمخزون</div>
+  <div class="alert">من هنا يمكنك إضافة منتج جديد أو تعديل السعر والكميات داخل نسخة الديمو.</div>
+  <div id="productManager" class="list"></div>
+  <button class="btn primary" onclick="openProductEditor()">+ إضافة منتج</button>
 </section>
 
 <div class="note" style="margin-top:14px;text-align:center">نموذج مستقل لأغراض العرض فقط — غير تابع أو معتمد من أي متجر. جميع أسماء الموظفات والمنتجات والكميات والأسعار والفروع والبيانات المعروضة تجريبية.</div>
@@ -334,6 +338,53 @@ function renderAlerts(){
  }));
  if(!alertsList.innerHTML)alertsList.innerHTML="<div class='alert green'>لا توجد تنبيهات حرجة حاليًا.</div>";
 }
+
+function renderProductManager(){
+ let box=document.getElementById("productManager"); if(!box)return;
+ box.innerHTML="";
+ products.forEach(p=>{
+  let total=Object.values(p.stock).reduce((a,b)=>a+b,0);
+  let ks=Object.keys(p.stock);
+  box.innerHTML+=`<div class="item">
+   <div class="item-top"><b>${p.name}</b><span class="pill">${p.sku}</span></div>
+   <div class="meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total}</div>
+   <div class="stockline"><span class="chip">${ks[0]}: ${p.stock[ks[0]]}</span><span class="chip">${ks[1]}: ${p.stock[ks[1]]}</span><span class="chip">${ks[2]}: ${p.stock[ks[2]]}</span></div>
+   <div class="actions"><button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button><button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button></div>
+  </div>`;
+ });
+}
+function openProductEditor(id=null){
+ let p=id?products.find(x=>x.id===id):null;
+ document.getElementById("peId").value=p?p.id:"";
+ document.getElementById("productEditorTitle").textContent=p?"تعديل المنتج":"إضافة منتج";
+ document.getElementById("peName").value=p?p.name:"";
+ document.getElementById("peSku").value=p?p.sku:"";
+ document.getElementById("peCat").value=p?p.cat:"عناية";
+ document.getElementById("pePrice").value=p?p.price:"";
+ document.getElementById("peIcon").value=p?p.icon:"✨";
+ let ks=p?Object.keys(p.stock):["الفرع الأول","الفرع الثاني","الفرع الثالث"];
+ document.getElementById("peB1").value=p?p.stock[ks[0]]:0;
+ document.getElementById("peB2").value=p?p.stock[ks[1]]:0;
+ document.getElementById("peB3").value=p?p.stock[ks[2]]:0;
+ document.getElementById("productEditorModal").classList.add("show");
+}
+function saveProductEditor(){
+ let name=document.getElementById("peName").value.trim(), sku=document.getElementById("peSku").value.trim();
+ if(!name||!sku){toast("أدخل اسم المنتج والكود");return}
+ let id=document.getElementById("peId").value?Number(document.getElementById("peId").value):(Math.max(0,...products.map(p=>p.id))+1);
+ let stock={"الفرع الأول":Number(document.getElementById("peB1").value||0),"الفرع الثاني":Number(document.getElementById("peB2").value||0),"الفرع الثالث":Number(document.getElementById("peB3").value||0)};
+ let existing=products.find(p=>p.id===id);
+ let obj={id,name,sku,cat:document.getElementById("peCat").value,price:Number(document.getElementById("pePrice").value||0),icon:document.getElementById("peIcon").value||"✨",stock};
+ if(existing) Object.assign(existing,obj); else products.push(obj);
+ saveProducts(); closeModal("productEditorModal"); refresh(); renderProductManager(); toast("تم حفظ المنتج");
+}
+function deleteProduct(id){
+ let p=products.find(x=>x.id===id); if(!p)return;
+ products=products.filter(x=>x.id!==id);
+ saveProducts(); logOperation("حذف منتج",p.name,"الإدارة","حذف من نسخة الديمو");
+ refresh(); renderProductManager(); toast("تم حذف المنتج");
+}
+
 function dashboard(){
  k1.textContent=reservations.length;k2.textContent=reservations.filter(x=>x.status!=="تم الاستلام").length;k3.textContent=transfers.filter(x=>x.status!=="مكتمل").length;k4.textContent=lowCount();
  let pending=reservations.filter(x=>x.status!=="تم الاستلام").length;
@@ -381,5 +432,25 @@ if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(
 let savedEmployee=localStorage.getItem("branchFlowEmployee");if(savedEmployee&&[...employee.options].some(o=>o.value===savedEmployee))employee.value=savedEmployee;
 refresh();
 </script>
+
+<div id="productEditorModal" class="modal">
+ <div class="sheet">
+  <div class="sheet-head"><b id="productEditorTitle">إضافة منتج</b><button class="x" onclick="closeModal('productEditorModal')">×</button></div>
+  <div class="form">
+   <input id="peId" type="hidden">
+   <label>اسم المنتج</label><input id="peName">
+   <label>الكود</label><input id="peSku">
+   <label>الفئة</label>
+   <select id="peCat"><option>عناية</option><option>مكياج</option><option>عطور</option></select>
+   <label>السعر</label><input id="pePrice" inputmode="numeric">
+   <label>رمز/إيموجي</label><input id="peIcon" placeholder="✨">
+   <label>الفرع الأول</label><input id="peB1" inputmode="numeric">
+   <label>الفرع الثاني</label><input id="peB2" inputmode="numeric">
+   <label>الفرع الثالث</label><input id="peB3" inputmode="numeric">
+   <button class="btn primary" onclick="saveProductEditor()">حفظ المنتج</button>
+  </div>
+ </div>
+</div>
+
 </body>
 </html>
