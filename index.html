@@ -142,9 +142,15 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
   <div class="section-title">سجل العمليات</div>
   <div id="operationLog" class="list"></div>
   <div class="section-title">إدارة المنتجات والمخزون</div>
-  <div class="alert">من هنا يمكنك إضافة منتج جديد أو تعديل السعر والكميات داخل نسخة الديمو.</div>
+  <div class="alert">من هنا يمكنك إضافة منتج جديد، تعديل السعر والكميات، وتحديد حد التنبيه لكل منتج. أزرار +1 و-1 تسهّل تسوية المخزون بسرعة.</div>
   <div id="productManager" class="list"></div>
   <button class="btn primary wide" style="margin-top:10px" onclick="openProductEditor()">+ إضافة منتج جديد</button>
+   <div class="quick" style="margin-top:10px">
+    <button class="btn outline" onclick="exportDemoData()">تصدير نسخة احتياطية</button>
+    <button class="btn outline" onclick="document.getElementById('importDemoFile').click()">استيراد نسخة</button>
+   </div>
+   <input id="importDemoFile" type="file" accept="application/json" style="display:none" onchange="importDemoData(event)">
+   <button class="btn danger wide" style="margin-top:10px" onclick="resetDemoData()">إعادة ضبط بيانات الديمو</button>
 </section>
 
 <div class="note" style="margin-top:14px;text-align:center">نموذج مستقل لأغراض العرض فقط — غير تابع أو معتمد من أي متجر. جميع أسماء الموظفات والمنتجات والكميات والأسعار والفروع والبيانات المعروضة تجريبية.</div>
@@ -200,7 +206,14 @@ let reservations=JSON.parse(localStorage.getItem("hudaProReservations")||"[]");
 let transfers=JSON.parse(localStorage.getItem("hudaProTransfers")||"[]");
 let operations=JSON.parse(localStorage.getItem("branchFlowOperations")||"[]");
 function total(p){return Object.values(p.stock).reduce((a,b)=>a+b,0)}
-function lowCount(){return products.reduce((n,p)=>n+Object.values(p.stock).filter(x=>x<=2).length,0)}
+function lowCount(){
+ let c=0;
+ products.forEach(p=>{
+  let threshold=(p.lowThreshold??3);
+  Object.values(p.stock).forEach(q=>{if(q<=threshold)c++});
+ });
+ return c;
+}
 function fmt(n){return n.toLocaleString("en-US")+" د.ع"}
 function chip(n,b){let cls=n===0?"no":n<=2?"low":"ok";return `<span class="chip ${cls}">${b}: ${n}</span>`}
 function renderProducts(){
@@ -347,9 +360,14 @@ function renderProductManager(){
   let ks=Object.keys(p.stock);
   box.innerHTML+=`<div class="item">
    <div class="item-top"><b>${p.name}</b><span class="pill">${p.sku}</span></div>
-   <div class="meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total}</div>
+   <div class="meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${p.lowThreshold??3}</div>
    <div class="stockline"><span class="chip">${ks[0]}: ${p.stock[ks[0]]}</span><span class="chip">${ks[1]}: ${p.stock[ks[1]]}</span><span class="chip">${ks[2]}: ${p.stock[ks[2]]}</span></div>
-   <div class="actions"><button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button><button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button></div>
+   <div class="actions">
+    <button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button>
+    <button class="btn outline" onclick="quickStock(${p.id},1)">+1 مخزون</button>
+    <button class="btn outline" onclick="quickStock(${p.id},-1)">-1 مخزون</button>
+    <button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button>
+   </div>
   </div>`;
  });
 }
@@ -366,6 +384,7 @@ function openProductEditor(id=null){
  document.getElementById("peB1").value=p?p.stock[ks[0]]:0;
  document.getElementById("peB2").value=p?p.stock[ks[1]]:0;
  document.getElementById("peB3").value=p?p.stock[ks[2]]:0;
+ document.getElementById("peLow").value=p?(p.lowThreshold??3):3;
  document.getElementById("productEditorModal").classList.add("show");
 }
 function saveProductEditor(){
@@ -375,7 +394,7 @@ function saveProductEditor(){
  if(products.some(p=>String(p.sku).toLowerCase()===sku.toLowerCase()&&p.id!==id)){toast("هذا الكود مستخدم لمنتج آخر");return}
  let stock={"الفرع الأول":Math.max(0,Number(document.getElementById("peB1").value||0)),"الفرع الثاني":Math.max(0,Number(document.getElementById("peB2").value||0)),"الفرع الثالث":Math.max(0,Number(document.getElementById("peB3").value||0))};
  let existing=products.find(p=>p.id===id);
- let obj={id,name,sku,cat:document.getElementById("peCat").value,price:Number(document.getElementById("pePrice").value||0),emoji:document.getElementById("peIcon").value||"✨",stock};
+ let obj={id,name,sku,cat:document.getElementById("peCat").value,price:Number(document.getElementById("pePrice").value||0),emoji:document.getElementById("peIcon").value||"✨",stock,lowThreshold:Math.max(0,Number(document.getElementById("peLow").value||3))};
  if(existing) Object.assign(existing,obj); else products.push(obj);
  saveProducts(); closeModal("productEditorModal"); refresh(); renderProductManager(); toast("تم حفظ المنتج");
 }
@@ -384,6 +403,71 @@ function deleteProduct(id){
  products=products.filter(x=>x.id!==id);
  saveProducts(); logOperation("حذف منتج",p.name,"الإدارة","حذف من نسخة الديمو");
  refresh(); renderProductManager(); toast("تم حذف المنتج");
+}
+
+
+
+function quickStock(id,delta){
+  let p=products.find(x=>x.id===id); if(!p)return;
+  let br=prompt("اكتب اسم الفرع: الفرع الأول / الفرع الثاني / الفرع الثالث","الفرع الأول");
+  if(!br||!(br in p.stock)) return;
+  let before=Number(p.stock[br]||0);
+  let after=Math.max(0,before+delta);
+  p.stock[br]=after;
+  saveProducts();
+  logOperation("تعديل مخزون",p.name,br,`${before} ← ${after}`);
+  refresh(); renderProductManager();
+  toast(`تم تحديث ${br}: ${after}`);
+}
+
+function exportDemoData(){
+  let payload={
+    exportedAt:new Date().toISOString(),
+    products,
+    reservations,
+    transfers,
+    operations,
+    employee:document.getElementById("employee").value
+  };
+  let blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  let a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="branch-flow-backup.json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),500);
+  toast("تم تجهيز النسخة الاحتياطية");
+}
+function importDemoData(event){
+  let file=event.target.files&&event.target.files[0]; if(!file)return;
+  let reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      let d=JSON.parse(reader.result);
+      if(!Array.isArray(d.products)) throw new Error("bad");
+      products=d.products;
+      reservations=Array.isArray(d.reservations)?d.reservations:[];
+      transfers=Array.isArray(d.transfers)?d.transfers:[];
+      operations=Array.isArray(d.operations)?d.operations:[];
+      if(d.employee && document.getElementById("employee")) document.getElementById("employee").value=d.employee;
+      saveProducts();
+      localStorage.setItem("hudaProReservations",JSON.stringify(reservations));
+      localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));
+      localStorage.setItem("branchFlowOperations",JSON.stringify(operations));
+      refresh(); renderProductManager(); toast("تم استيراد النسخة ✓");
+    }catch(e){toast("ملف النسخة الاحتياطية غير صالح")}
+    event.target.value="";
+  };
+  reader.readAsText(file);
+}
+function resetDemoData(){
+  if(!confirm("سيتم حذف التغييرات التجريبية الحالية وإرجاع بيانات الديمو الأصلية. هل تريد المتابعة؟")) return;
+  products=JSON.parse(JSON.stringify(defaultProducts));
+  reservations=[]; transfers=[]; operations=[];
+  localStorage.removeItem("branchFlowProducts");
+  localStorage.removeItem("hudaProReservations");
+  localStorage.removeItem("hudaProTransfers");
+  localStorage.removeItem("branchFlowOperations");
+  refresh(); renderProductManager(); toast("تمت إعادة ضبط بيانات الديمو");
 }
 
 function dashboard(){
@@ -449,6 +533,7 @@ refresh();
    <label>الفرع الأول</label><input id="peB1" inputmode="numeric">
    <label>الفرع الثاني</label><input id="peB2" inputmode="numeric">
    <label>الفرع الثالث</label><input id="peB3" inputmode="numeric">
+   <label>حد التنبيه للمخزون المنخفض</label><input id="peLow" inputmode="numeric" value="3">
    <button class="btn primary" onclick="saveProductEditor()">حفظ المنتج</button>
   </div>
  </div>
