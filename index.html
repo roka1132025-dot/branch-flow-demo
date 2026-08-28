@@ -74,10 +74,10 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
     <h1>هل المنتج متوفر؟ وفي أي فرع؟ ✨</h1>
     <p>ابحثي عن المنتج خلال ثوانٍ، شاهدي توفره في الفرع الثاني والفرع الثالث والفرع الأول، ثم ثبّتي الحجز أو اطلبي تحويله من فرع آخر.</p>
     <div class="stats">
-      <div class="stat"><b id="sProducts">0</b><span>منتج</span></div>
-      <div class="stat"><b id="sStock">0</b><span>قطعة</span></div>
+      <div class="stat"><b id="sProducts">8</b><span>منتج</span></div>
+      <div class="stat"><b id="sStock">92</b><span>قطعة</span></div>
       <div class="stat"><b id="sRes">0</b><span>حجز</span></div>
-      <div class="stat"><b id="sLow">0</b><span>منخفض</span></div>
+      <div class="stat"><b id="sLow">9</b><span>منخفض</span></div>
     </div>
   </div>
   <div class="alert green" style="margin-top:-2px;margin-bottom:10px">
@@ -103,7 +103,13 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
     <button class="tab" data-cat="مكياج">مكياج</button>
     <button class="tab" data-cat="عطور">عطور</button>
   </div>
-  <div id="productGrid" class="grid"></div>
+
+  <div id="productGrid" class="grid">
+    <div class="card"><div class="thumb">☀️<span class="sku">DEMO-001</span></div><div><div class="title">واقي شمس SPF50+</div><div class="meta">عناية • 28,000 د.ع • إجمالي 17</div><div class="stockline"><span class="chip ok">الفرع الأول: 8</span><span class="chip ok">الفرع الثاني: 3</span><span class="chip ok">الفرع الثالث: 6</span></div><div class="actions"><button class="btn primary">حجز</button><button class="btn secondary">رد واتساب</button><button class="btn outline">تحويل</button></div></div></div>
+    <div class="card"><div class="thumb">💧<span class="sku">DEMO-002</span></div><div><div class="title">سيروم ترطيب للوجه</div><div class="meta">عناية • 24,000 د.ع • إجمالي 13</div><div class="stockline"><span class="chip low">الفرع الأول: 2</span><span class="chip ok">الفرع الثاني: 7</span><span class="chip ok">الفرع الثالث: 4</span></div><div class="actions"><button class="btn primary">حجز</button><button class="btn secondary">رد واتساب</button><button class="btn outline">تحويل</button></div></div></div>
+    <div class="card"><div class="thumb">💄<span class="sku">DEMO-003</span></div><div><div class="title">فاونديشن - درجة متوسطة</div><div class="meta">مكياج • 42,000 د.ع • إجمالي 6</div><div class="stockline"><span class="chip ok">الفرع الأول: 5</span><span class="chip low">الفرع الثاني: 1</span><span class="chip no">الفرع الثالث: 0</span></div><div class="actions"><button class="btn primary">حجز</button><button class="btn secondary">رد واتساب</button><button class="btn outline">تحويل</button></div></div></div>
+  </div>
+
 </section>
 
 <section id="reservations" class="panel">
@@ -133,6 +139,8 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
   <canvas id="chart" width="520" height="150"></canvas>
   <div class="section-title">ملخص ذكي</div>
   <div id="smartSummary" class="alert green"></div>
+  <div class="section-title">سجل العمليات</div>
+  <div id="operationLog" class="list"></div>
 </section>
 
 <div class="note" style="margin-top:14px;text-align:center">نموذج مستقل لأغراض العرض فقط — غير تابع أو معتمد من أي متجر. جميع أسماء الموظفات والمنتجات والكميات والأسعار والفروع والبيانات المعروضة تجريبية.</div>
@@ -184,6 +192,7 @@ const products=[
 let currentCat="all", selectedProduct=null;
 let reservations=JSON.parse(localStorage.getItem("hudaProReservations")||"[]");
 let transfers=JSON.parse(localStorage.getItem("hudaProTransfers")||"[]");
+let operations=JSON.parse(localStorage.getItem("branchFlowOperations")||"[]");
 function total(p){return Object.values(p.stock).reduce((a,b)=>a+b,0)}
 function lowCount(){return products.reduce((n,p)=>n+Object.values(p.stock).filter(x=>x<=2).length,0)}
 function fmt(n){return n.toLocaleString("en-US")+" د.ع"}
@@ -240,17 +249,25 @@ function reserve(id){
  BR.filter(b=>selectedProduct.stock[b]>0).forEach(b=>sel.innerHTML+=`<option>${b}</option>`);
  document.getElementById("reserveTitle").textContent="حجز: "+selectedProduct.name;openModal("reserveModal");
 }
+function logOperation(type, product, branchName, extra=""){
+  operations.unshift({id:Date.now()+Math.random(),employee:document.getElementById("employee").value,type,product,branch:branchName,extra,ts:new Date().toISOString()});
+  operations=operations.slice(0,50);
+  localStorage.setItem("branchFlowOperations",JSON.stringify(operations));
+}
+function formatTime(ts){
+  return new Date(ts).toLocaleString("ar-IQ",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
+}
 function saveReservation(){
  let name=customer.value.trim(), ph=phone.value.trim(), br=reserveBranch.value;
  if(!name||!ph){toast("أدخلي اسم الزبونة ورقم الهاتف");return}
  reservations.unshift({id:Date.now(),product:selectedProduct.name,sku:selectedProduct.sku,branch:br,name,phone:ph,note:reserveNote.value,status:"بانتظار الاستلام",employee:employee.value,ts:new Date().toISOString()});
- localStorage.setItem("hudaProReservations",JSON.stringify(reservations));closeModal("reserveModal");customer.value=phone.value=reserveNote.value="";refresh();toast("تم تسجيل الحجز ✓");
+ localStorage.setItem("hudaProReservations",JSON.stringify(reservations));logOperation("حجز",selectedProduct.name,br,`للزبونة ${name}`);closeModal("reserveModal");customer.value=phone.value=reserveNote.value="";refresh();toast("تم تسجيل الحجز ✓");
 }
 function renderReservations(){
  orders.innerHTML=reservations.length?"":"<div class='alert'>لا توجد حجوزات تجريبية بعد.</div>";
  reservations.forEach(o=>orders.innerHTML+=`<div class="item"><div class="item-top"><b>${o.product}</b><span class="pill ${o.status==="تم الاستلام"?"done":"pending"}">${o.status}</span></div><div class="meta">${o.name} • ${o.phone} • ${o.branch}</div><div class="meta"><b>نفذت الحجز:</b> ${o.employee||"موظفة تجريبية"}</div>${o.note?`<div class="note">${o.note}</div>`:""}<div class="actions"><button class="btn secondary" onclick="markDone(${o.id})">تم الاستلام</button><button class="btn outline" onclick="whatsCustomer(${o.id})">رسالة للزبونة</button><button class="btn danger" onclick="deleteRes(${o.id})">حذف</button></div></div>`);
 }
-function markDone(id){let x=reservations.find(r=>r.id===id);x.status="تم الاستلام";saveAll()}
+function markDone(id){let x=reservations.find(r=>r.id===id);x.status="تم الاستلام";logOperation("إتمام حجز",x.product,x.branch,`استلام ${x.name}`);saveAll()}
 function deleteRes(id){reservations=reservations.filter(r=>r.id!==id);saveAll()}
 function whatsCustomer(id){let o=reservations.find(r=>r.id===id);let txt=`مرحباً ${o.name} 🌸 تم تثبيت حجز ${o.product} في فرع ${o.branch}.`;navigator.clipboard?.writeText(txt);toast("تم نسخ رسالة الزبونة")}
 function copyReply(id){
@@ -267,7 +284,7 @@ function saveTransfer(){
  let p=products.find(x=>x.id===pid);
  if(p.stock[from]<qty){toast("الكمية غير متوفرة في الفرع المصدر");return}
  transfers.unshift({id:Date.now(),product:p.name,sku:p.sku,from,to,qty,status:"جديد",employee:employee.value,ts:new Date().toISOString()});
- localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));closeModal("transferModal");renderTransfers();dashboard();toast("تم إنشاء طلب التحويل");
+ localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));logOperation("طلب تحويل",p.name,`${from} ← ${to}`,`${qty} قطعة`);closeModal("transferModal");renderTransfers();dashboard();toast("تم إنشاء طلب التحويل");
 }
 function renderTransfers(){
  transferList.innerHTML=transfers.length?"":"<div class='alert'>لا توجد تحويلات تجريبية بعد.</div>";
@@ -276,7 +293,7 @@ function renderTransfers(){
 function completeTransfer(id){
  let t=transfers.find(x=>x.id===id); if(t.status==="مكتمل")return;
  let p=products.find(x=>x.sku===t.sku); if(p.stock[t.from]<t.qty){toast("المخزون تغير ولا يكفي");return}
- p.stock[t.from]-=t.qty;p.stock[t.to]+=t.qty;t.status="مكتمل";saveAll();toast("تم تحديث مخزون الفرعين");
+ p.stock[t.from]-=t.qty;p.stock[t.to]+=t.qty;t.status="مكتمل";logOperation("إكمال تحويل",t.product,`${t.from} ← ${t.to}`,`${t.qty} قطعة`);saveAll();toast("تم تحديث مخزون الفرعين");
 }
 function renderAlerts(){
  alertsList.innerHTML="";
@@ -292,7 +309,16 @@ function dashboard(){
  let pending=reservations.filter(x=>x.status!=="تم الاستلام").length;
  let top={};reservations.forEach(x=>top[x.branch]=(top[x.branch]||0)+1);let topB=Object.keys(top).sort((a,b)=>top[b]-top[a])[0]||"لا بيانات";
  smartSummary.textContent=`يوجد ${pending} حجز بانتظار الاستلام. أكثر فرع نشاطًا في بيانات الديمو: ${topB}. ويوجد ${lowCount()} حالة مخزون منخفض أو صفر عبر الفروع.`;
+ renderOperationLog();
  drawChart();
+}
+function renderOperationLog(){
+ let box=document.getElementById("operationLog");
+ if(!box)return;
+ box.innerHTML=operations.length?"":"<div class='alert'>لا توجد عمليات مسجلة بعد. جرّبي حجز منتج أو إنشاء تحويل.</div>";
+ operations.slice(0,12).forEach(o=>{
+   box.innerHTML+=`<div class="item"><div class="item-top"><b>${o.type}</b><span class="pill">${formatTime(o.ts)}</span></div><div class="meta">${o.product} • ${o.branch}</div><div class="note"><b>الموظفة:</b> ${o.employee}${o.extra?` • ${o.extra}`:""}</div></div>`;
+ });
 }
 function drawChart(){
  let c=chart,ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);
@@ -305,7 +331,7 @@ function simulateScan(){
  let p=products[Math.floor(Math.random()*products.length)];q.value=p.sku;renderProducts();toast("تمت محاكاة مسح الباركود: "+p.sku)
 }
 function exportData(){
- let data={reservations,transfers,exportedAt:new Date().toISOString()};let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="huda-demo-export.json";a.click();URL.revokeObjectURL(a.href);toast("تم تجهيز ملف التصدير")
+ let data={reservations,transfers,exportedAt:new Date().toISOString()};let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="branch-flow-demo-export.json";a.click();URL.revokeObjectURL(a.href);toast("تم تجهيز ملف التصدير")
 }
 function showPanel(id){
  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");
@@ -315,13 +341,14 @@ function showPanel(id){
 function openModal(id){document.getElementById(id).classList.add("show")}
 function closeModal(id){document.getElementById(id).classList.remove("show")}
 function toast(t){let x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",1700)}
-function saveAll(){localStorage.setItem("hudaProReservations",JSON.stringify(reservations));localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));refresh()}
+function saveAll(){localStorage.setItem("hudaProReservations",JSON.stringify(reservations));localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));localStorage.setItem("branchFlowOperations",JSON.stringify(operations));refresh()}
 function refresh(){renderProducts();renderReservations();renderTransfers();renderAlerts();dashboard();applyRole()}
 function applyRole(){}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentCat=b.dataset.cat;renderProducts()});
 document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
-q.oninput=renderProducts;branch.onchange=renderProducts;employee.onchange=()=>toast("تم اختيار "+employee.value);
+q.oninput=renderProducts;branch.onchange=renderProducts;employee.onchange=()=>{localStorage.setItem("branchFlowEmployee",employee.value);toast("تم اختيار "+employee.value)};
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+let savedEmployee=localStorage.getItem("branchFlowEmployee");if(savedEmployee&&[...employee.options].some(o=>o.value===savedEmployee))employee.value=savedEmployee;
 refresh();
 </script>
 </body>
