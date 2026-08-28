@@ -106,6 +106,36 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
 .branch-action.low{background:#fffaf0}
 .branch-action.zero{background:#fff3f2}
 
+
+/* v7 compact mobile admin inventory */
+.admin-product-card{padding:14px}
+.admin-product-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.admin-product-title{min-width:0;flex:1}
+.admin-product-title h3{margin:0 0 4px;font-size:20px;line-height:1.35}
+.admin-product-meta{font-size:13px;color:#777;line-height:1.5}
+.admin-product-stock{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.admin-branch-box{border:1px solid var(--line);border-radius:14px;padding:8px 6px;background:#fafafa;text-align:center;min-width:0}
+.admin-branch-name{font-size:12px;color:#666;margin-bottom:7px;white-space:nowrap}
+.admin-branch-qty{display:grid;grid-template-columns:32px 1fr 32px;align-items:center;gap:5px}
+.admin-branch-qty button{width:32px;height:32px;padding:0;border:1px solid var(--line);border-radius:10px;background:#fff;color:#2878f0;font-size:20px;font-weight:700;line-height:1}
+.admin-branch-qty strong{font-size:18px}
+.admin-branch-box.low{background:#fff8e8}
+.admin-branch-box.zero{background:#fff0ef}
+.admin-product-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.admin-product-actions .btn{width:100%;min-height:42px}
+@media (max-width:430px){
+  .admin-product-card{padding:12px}
+  .admin-product-title h3{font-size:18px}
+  .admin-product-meta{font-size:12px}
+  .admin-product-stock{gap:6px}
+  .admin-branch-box{padding:7px 4px}
+  .admin-branch-name{font-size:11px}
+  .admin-branch-qty{grid-template-columns:30px 1fr 30px;gap:3px}
+  .admin-branch-qty button{width:30px;height:30px;font-size:19px}
+  .admin-branch-qty strong{font-size:17px}
+}
+@media (max-width:360px){.admin-product-stock{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -449,27 +479,52 @@ function applyBranchStock(branch){
  toast(`${p.name} • ${branch}: ${after}`);
 }
 
+function adjustStockDirect(id,branch,delta){
+ let p=products.find(x=>x.id===id); if(!p || !(branch in p.stock)) return;
+ let before=Number(p.stock[branch]||0);
+ let after=Math.max(0,before+delta);
+ if(after===before){
+  if(delta<0) toast("المخزون صفر بالفعل");
+  return;
+ }
+ p.stock[branch]=after;
+ saveProducts();
+ logOperation("تعديل مخزون",p.name,branch,`${before} ← ${after}`);
+ refresh();
+ renderProductManager();
+ toast(`${p.name} • ${branch}: ${after}`);
+}
+
 function renderProductManager(){
  let box=document.getElementById("productManager"); if(!box)return;
  box.innerHTML=products.map(p=>{
   let total=Object.values(p.stock).reduce((a,b)=>a+Number(b||0),0);
   let threshold=(p.lowThreshold??3);
-  let chips=Object.entries(p.stock).map(([br,q])=>{
-   let cls=Number(q)===0?"zero":Number(q)<=threshold?"low":"ok";
-   return `<span class="stock-chip ${cls}">${br}: ${q}</span>`;
-  }).join(" ");
-  return `<div class="card">
-   <div class="row">
-    <div><h3>${p.name}</h3><div class="meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${threshold}</div></div>
-    <span class="sku">${p.sku}</span>
-   </div>
-   <div class="chips" style="margin-top:10px">${chips}</div>
-   <div class="actions">
-    <button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button>
-    <button class="btn outline" onclick="openBranchStockModal(${p.id},1)">+1 مخزون</button>
-    <button class="btn outline" onclick="openBranchStockModal(${p.id},-1)">-1 مخزون</button>
-    <button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button>
-   </div>
+  let branches=Object.entries(p.stock).map(([br,q])=>{
+   let nq=Number(q||0);
+   let cls=nq===0?"zero":nq<=threshold?"low":"";
+   return `<div class="admin-branch-box ${cls}">
+     <div class="admin-branch-name">${br}</div>
+     <div class="admin-branch-qty">
+       <button type="button" onclick="adjustStockDirect(${p.id},'${br}',-1)">−</button>
+       <strong>${nq}</strong>
+       <button type="button" onclick="adjustStockDirect(${p.id},'${br}',1)">+</button>
+     </div>
+   </div>`;
+  }).join("");
+  return `<div class="card admin-product-card">
+    <div class="admin-product-head">
+      <div class="admin-product-title">
+        <h3>${p.name}</h3>
+        <div class="admin-product-meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${threshold}</div>
+      </div>
+      <span class="sku">${p.sku}</span>
+    </div>
+    <div class="admin-product-stock">${branches}</div>
+    <div class="admin-product-actions">
+      <button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button>
+      <button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button>
+    </div>
   </div>`;
  }).join("");
 }
