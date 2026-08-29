@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<title>Huda Reserve Pro</title>
+<style>
+:root{--bg:#f7f4f1;--card:#fff;--text:#151515;--muted:#777;--line:#e9e4df;--accent:#111;--soft:#f2ebe5;--warn:#9b5c00;--danger:#b42318;--ok:#147a4d}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{max-width:560px;margin:auto;min-height:100vh;background:#fff;box-shadow:0 0 40px #0000000d}
+header{position:sticky;top:0;z-index:20;background:#fffefdf2;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 15px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.brandbox{min-width:0}.brand{font-weight:950;font-size:17px;letter-spacing:.3px;white-space:nowrap}.brand span{font-weight:750}.sub{font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap}
+.role{width:auto;max-width:112px;border:1px solid #ddd;border-radius:999px;padding:7px 9px;font-size:10px;background:#fff;font-weight:700}
+main{padding:13px 13px 150px}.hero{background:linear-gradient(135deg,#f3e7dc,#fbf9f7);border:1px solid #eadfd7;border-radius:22px;padding:16px;margin-bottom:12px}
+.hero h1{font-size:20px;margin:0 0 6px}.hero p{font-size:12px;line-height:1.7;color:#625950;margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.stat{background:#fff9;border:1px solid #ebdfd7;border-radius:14px;padding:9px 5px;text-align:center}.stat b{display:block;font-size:16px}.stat span{font-size:9px;color:#777}
+.toolbar{display:grid;grid-template-columns:1fr 126px;gap:7px}.search,select,input{width:100%;border:1px solid #ddd;border-radius:12px;padding:11px;background:#fff;font-size:13px;outline:none}.search:focus,input:focus,select:focus{border-color:#aaa}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}.quick button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 4px;font-size:10px}.quick .ico{font-size:19px;display:block;margin-bottom:4px}
+.tabs{display:flex;gap:6px;overflow:auto;padding:2px 0 6px}.tab{white-space:nowrap;border:1px solid #ddd;background:#fff;padding:8px 11px;border-radius:999px;font-size:11px}.tab.active{background:#111;color:#fff;border-color:#111}
+.grid{display:grid;gap:9px}.card{border:1px solid var(--line);border-radius:18px;padding:12px;display:grid;grid-template-columns:64px 1fr;gap:11px;background:#fff}
+.thumb{height:64px;border-radius:16px;background:linear-gradient(145deg,#f3ebe5,#f8f8f8);display:grid;place-items:center;font-size:28px;position:relative}.sku{position:absolute;bottom:4px;left:4px;font-size:8px;background:#fff;border-radius:8px;padding:2px 4px;border:1px solid #eee}
+.title{font-weight:850;font-size:13px}.meta{font-size:10px;color:var(--muted);margin:4px 0}.stockline{display:flex;gap:5px;flex-wrap:wrap}.chip{font-size:9px;border-radius:999px;padding:4px 6px;background:#f3f3f3}.chip.low{background:#fff1da;color:var(--warn)}.chip.no{background:#fde8e7;color:var(--danger)}.chip.ok{background:#e9f7ef;color:var(--ok)}
+.actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:8px 9px;font-weight:800;font-size:10px;cursor:pointer}.primary{background:#111;color:#fff}.secondary{background:#f1f1f1}.outline{background:#fff;border:1px solid #ddd}.danger{background:#fdebea;color:#a51d16}
+.panel{display:none}.panel.active{display:block}.section-title{font-size:14px;font-weight:900;margin:13px 2px 8px}
+.list{display:grid;gap:8px}.item{border:1px solid var(--line);border-radius:16px;padding:11px;background:#fff}.item-top{display:flex;justify-content:space-between;gap:8px}.pill{font-size:9px;background:#eee;padding:4px 7px;border-radius:999px}.pill.pending{background:#fff3d7;color:#8a5d00}.pill.done{background:#e6f5ec;color:#176b46}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px}.kpi>div{border:1px solid var(--line);border-radius:16px;padding:13px}.kpi b{display:block;font-size:19px}.kpi small{font-size:10px;color:#777}
+.alert{border-right:4px solid #d4921f;background:#fff7e5;padding:11px;border-radius:13px;margin:8px 0;font-size:11px;line-height:1.5}
+.alert.red{border-color:#c53b32;background:#fff0ef}.alert.green{border-color:#31936a;background:#edf9f3}
+canvas{width:100%;height:150px;background:#fff;border:1px solid var(--line);border-radius:16px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);background:#fffefc;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom));z-index:25}
+nav button{border:0;background:none;padding:7px 2px;font-size:9px;color:#777}nav button span{display:block;font-size:18px;margin-bottom:2px}nav button.active{font-weight:900;color:#111}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:40}.modal.show{display:flex}.sheet{background:#fff;width:min(560px,100%);margin:auto;border-radius:24px 24px 0 0;padding:16px;max-height:88vh;overflow:auto}.sheet h3{margin:0 0 10px}.field{margin:8px 0}.field label{font-size:10px;color:#666;display:block;margin-bottom:4px}.wide{width:100%}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 13px;border-radius:11px;font-size:11px;display:none;z-index:60}
+.note{font-size:10px;color:#777;line-height:1.6}.divider{height:1px;background:var(--line);margin:10px 0}
+.search-status{margin:8px 0 10px;padding:12px 13px;border:1px solid var(--line);border-radius:15px;background:#faf8f6;font-size:11px;line-height:1.7}
+.search-status.found{background:#edf9f3;border-color:#cfe9da}
+.search-status.missing{background:#fff5f3;border-color:#f2d2cd}
+.search-status .headline{font-size:13px;font-weight:900;margin-bottom:3px}
+.search-status .detail{color:#666}
+.search-status .availability{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.search-status .availability span{font-size:9px;padding:5px 7px;border-radius:999px;background:#fff;border:1px solid #e7e7e7}
+.search-status b{font-size:12px}
+.empty-result{border:1px dashed #d8cec6;border-radius:18px;padding:24px 14px;text-align:center;background:#fcfaf8;margin-top:8px}
+.empty-result .ico{font-size:34px;margin-bottom:8px}.empty-result b{display:block;font-size:14px;margin-bottom:5px}.empty-result span{font-size:11px;color:#777;line-height:1.7}
+.hidden{display:none!important}
+@media(max-width:390px){
+header{padding:12px}.brand{font-size:15px}.sub{font-size:8.5px}.role{max-width:96px;padding:6px 7px}
+main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:18px}
+.toolbar{grid-template-columns:1fr 112px}.stats{gap:5px}.stat b{font-size:15px}
+}
+
+/* v5 mobile modal + admin inventory controls */
+.modal{align-items:flex-end;padding:12px;overflow:auto}
+.modalbox{max-height:calc(100dvh - 84px);overflow:auto;overscroll-behavior:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+@media (max-width:560px){
+  .modal{padding:0;align-items:flex-end}
+  .modalbox{width:100%;max-width:none;border-radius:24px 24px 0 0;max-height:88dvh;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
+}
+.stock-adjust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.stock-adjust{border:1px solid var(--line);border-radius:14px;padding:9px 7px;background:#fafafa;text-align:center}
+.stock-adjust b{display:block;margin-bottom:6px}
+.stock-adjust .minirow{display:grid;grid-template-columns:36px 1fr 36px;gap:5px;align-items:center}
+.stock-adjust button{min-height:36px;border:1px solid var(--line);border-radius:10px;background:white;font-size:20px}
+.stock-adjust .qty{font-weight:800;font-size:18px}
+@media (max-width:430px){.stock-adjust-grid{grid-template-columns:1fr}}
+
+
+/* v6 branch-specific stock controls */
+.stock-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:92px;
+  padding:8px 10px;
+  border-radius:999px;
+  font-weight:700;
+}
+.stock-chip.ok{background:#e9f7ef;color:#16794c}
+.stock-chip.low{background:#fff3d9;color:#9a6300}
+.stock-chip.zero{background:#fde8e8;color:#b3261e}
+
+.branch-picker{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.branch-action{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#fff;
+  font-size:18px;
+}
+.branch-action .qty{
+  font-weight:800;
+}
+.branch-action.low{background:#fffaf0}
+.branch-action.zero{background:#fff3f2}
+
+
+/* v7 compact mobile admin inventory */
+.admin-product-card{padding:14px}
+.admin-product-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.admin-product-title{min-width:0;flex:1}
+.admin-product-title h3{margin:0 0 4px;font-size:20px;line-height:1.35}
+.admin-product-meta{font-size:13px;color:#777;line-height:1.5}
+.admin-product-stock{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.admin-branch-box{border:1px solid var(--line);border-radius:14px;padding:8px 6px;background:#fafafa;text-align:center;min-width:0}
+.admin-branch-name{font-size:12px;color:#666;margin-bottom:7px;white-space:nowrap}
+.admin-branch-qty{display:grid;grid-template-columns:32px 1fr 32px;align-items:center;gap:5px}
+.admin-branch-qty button{width:32px;height:32px;padding:0;border:1px solid var(--line);border-radius:10px;background:#fff;color:#2878f0;font-size:20px;font-weight:700;line-height:1}
+.admin-branch-qty strong{font-size:18px}
+.admin-branch-box.low{background:#fff8e8}
+.admin-branch-box.zero{background:#fff0ef}
+.admin-product-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.admin-product-actions .btn{width:100%;min-height:42px}
+@media (max-width:430px){
+  .admin-product-card{padding:12px}
+  .admin-product-title h3{font-size:18px}
+  .admin-product-meta{font-size:12px}
+  .admin-product-stock{gap:6px}
+  .admin-branch-box{padding:7px 4px}
+  .admin-branch-name{font-size:11px}
+  .admin-branch-qty{grid-template-columns:30px 1fr 30px;gap:3px}
+  .admin-branch-qty button{width:30px;height:30px;font-size:19px}
+  .admin-branch-qty strong{font-size:17px}
+}
+@media (max-width:360px){.admin-product-stock{grid-template-columns:1fr}}
+
+
+/* v8 iPhone admin card layout fix */
+#productManager .admin-product-card{display:block!important;grid-template-columns:none!important;gap:0!important;width:100%;overflow:hidden}
+#productManager .admin-product-head{display:flex;width:100%;align-items:flex-start;gap:8px}
+#productManager .admin-product-title{width:100%;min-width:0}
+#productManager .admin-product-head>.sku{position:static!important;flex:0 0 auto;max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#productManager .admin-product-stock{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%;gap:6px;margin-top:10px}
+#productManager .admin-branch-box{width:auto;min-width:0;padding:8px 4px}
+#productManager .admin-branch-name{white-space:normal;line-height:1.25;min-height:30px;display:flex;align-items:center;justify-content:center}
+#productManager .admin-branch-qty{direction:ltr;display:grid;grid-template-columns:30px minmax(20px,1fr) 30px;gap:3px}
+#productManager .admin-product-actions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%;gap:7px;margin-top:9px}
+@media(max-width:390px){
+ #productManager .admin-product-title h3{font-size:16px;line-height:1.3}
+ #productManager .admin-product-meta{font-size:10.5px;line-height:1.45}
+ #productManager .admin-product-stock{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #productManager .admin-branch-name{font-size:10px}
+ #productManager .admin-branch-qty{grid-template-columns:28px minmax(18px,1fr) 28px}
+ #productManager .admin-branch-qty button{width:28px;height:30px;font-size:18px}
+ #productManager .admin-branch-qty strong{font-size:16px}
+}
+@media(max-width:330px){#productManager .admin-product-stock{grid-template-columns:1fr!important}}
+
+
+/* v9 definitive admin layout: isolated from generic product .card grid */
+#productManager{display:grid;grid-template-columns:1fr;gap:10px;width:100%}
+#productManager .admin-product-card{display:block!important;width:100%!important;max-width:100%!important;border:1px solid var(--line);border-radius:18px;padding:12px;background:#fff;overflow:hidden}
+#productManager .admin-product-head{display:flex!important;flex-direction:row!important;align-items:flex-start!important;justify-content:space-between!important;width:100%!important;gap:10px!important}
+#productManager .admin-product-title{flex:1 1 auto!important;min-width:0!important;width:auto!important}
+#productManager .admin-product-title h3{margin:0 0 4px!important;font-size:18px!important;line-height:1.35!important;overflow-wrap:anywhere}
+#productManager .admin-product-meta{font-size:11px!important;line-height:1.55!important;color:#777!important}
+#productManager .admin-product-head>.sku{position:static!important;inset:auto!important;display:inline-block!important;flex:0 0 auto!important;max-width:95px!important;font-size:10px!important;border-radius:999px!important;padding:5px 8px!important;background:#f3f3f3!important;white-space:nowrap!important}
+#productManager .admin-product-stock{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;width:100%!important;margin:10px 0 0!important}
+#productManager .admin-branch-box{display:block!important;width:100%!important;min-width:0!important;border:1px solid var(--line)!important;border-radius:14px!important;padding:7px 4px!important;text-align:center!important;background:#fafafa!important}
+#productManager .admin-branch-box.low{background:#fff8e8!important}
+#productManager .admin-branch-box.zero{background:#fff0ef!important}
+#productManager .admin-branch-name{font-size:10px!important;line-height:1.25!important;min-height:25px!important;display:flex!important;align-items:center!important;justify-content:center!important;white-space:normal!important}
+#productManager .admin-branch-qty{direction:ltr!important;display:grid!important;grid-template-columns:28px minmax(20px,1fr) 28px!important;align-items:center!important;gap:3px!important;width:100%!important}
+#productManager .admin-branch-qty button{width:28px!important;height:30px!important;min-width:0!important;padding:0!important;border:1px solid var(--line)!important;border-radius:9px!important;background:#fff!important;color:#2878f0!important;font-size:18px!important;font-weight:700!important}
+#productManager .admin-branch-qty strong{font-size:16px!important;line-height:1!important}
+#productManager .admin-product-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;width:100%!important;margin-top:9px!important}
+#productManager .admin-product-actions .btn{width:100%!important;min-height:40px!important}
+@media(max-width:360px){#productManager .admin-product-stock{grid-template-columns:1fr!important}#productManager .admin-branch-name{min-height:0!important}#productManager .admin-branch-qty{grid-template-columns:34px 1fr 34px!important}}
+
+</style>
+
+<style>
+/* v10 — final mobile admin responsive fix */
+#productManager{display:flex!important;flex-direction:column!important;gap:12px!important;width:100%!important;min-width:0!important}
+#productManager .admin-product-card{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;padding:14px!important;overflow:hidden!important}
+#productManager .admin-product-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:10px!important;width:100%!important}
+#productManager .admin-product-title{min-width:0!important;width:100%!important}
+#productManager .admin-product-title h3{font-size:20px!important;line-height:1.3!important;margin:0 0 5px!important;white-space:normal!important;overflow-wrap:break-word!important;word-break:normal!important}
+#productManager .admin-product-meta{font-size:12px!important;line-height:1.55!important;white-space:normal!important}
+#productManager .admin-product-head>.sku{position:static!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;max-width:none!important;min-width:78px!important;white-space:nowrap!important;font-size:11px!important;padding:6px 9px!important}
+#productManager .admin-product-stock{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin-top:12px!important}
+#productManager .admin-branch-box{display:flex!important;flex-direction:column!important;justify-content:center!important;min-width:0!important;width:100%!important;min-height:98px!important;padding:9px 5px!important}
+#productManager .admin-branch-name{font-size:12px!important;line-height:1.3!important;min-height:32px!important;margin-bottom:6px!important;white-space:normal!important}
+#productManager .admin-branch-qty{display:grid!important;grid-template-columns:34px minmax(22px,1fr) 34px!important;align-items:center!important;gap:4px!important;width:100%!important;direction:ltr!important}
+#productManager .admin-branch-qty button{width:34px!important;height:36px!important;border-radius:10px!important;font-size:21px!important}
+#productManager .admin-branch-qty strong{font-size:19px!important;text-align:center!important}
+#productManager .admin-product-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;width:100%!important;margin-top:11px!important}
+#productManager .admin-product-actions .btn{min-height:44px!important;font-size:15px!important}
+@media(max-width:430px){
+  #productManager .admin-product-card{padding:12px!important}
+  #productManager .admin-product-head{grid-template-columns:1fr!important}
+  #productManager .admin-product-head>.sku{justify-self:start!important;min-width:0!important}
+  #productManager .admin-product-title h3{font-size:19px!important}
+  #productManager .admin-product-stock{grid-template-columns:1fr!important;gap:8px!important}
+  #productManager .admin-branch-box{min-height:78px!important;display:grid!important;grid-template-columns:minmax(90px,1fr) minmax(150px,1.4fr)!important;align-items:center!important;gap:8px!important;text-align:right!important;padding:10px!important}
+  #productManager .admin-branch-name{min-height:0!important;margin:0!important;font-size:14px!important;justify-content:flex-start!important}
+  #productManager .admin-branch-qty{grid-template-columns:40px minmax(30px,1fr) 40px!important;gap:7px!important}
+  #productManager .admin-branch-qty button{width:40px!important;height:40px!important;font-size:22px!important}
+  #productManager .admin-branch-qty strong{font-size:20px!important}
+}
+@media(max-width:350px){
+  #productManager .admin-branch-box{grid-template-columns:1fr!important;text-align:center!important}
+  #productManager .admin-branch-name{justify-content:center!important}
+}
+</style>
+
+
+<style>
+/* v11 — force admin product cards into a clean single-column mobile layout */
+@media (max-width: 600px){
+  #productManager,
+  #productManager *{box-sizing:border-box!important}
+
+  #productManager{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+
+  #productManager .admin-product-card{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0 0 12px!important;
+    padding:14px!important;
+    overflow:hidden!important;
+  }
+
+  #productManager .admin-product-head{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:7px!important;
+    align-items:stretch!important;
+  }
+
+  #productManager .admin-product-title{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  #productManager .admin-product-title h3{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 5px!important;
+    font-size:19px!important;
+    line-height:1.4!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+
+  #productManager .admin-product-meta{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  #productManager .admin-product-head > .sku{
+    position:static!important;
+    inset:auto!important;
+    align-self:flex-start!important;
+    display:inline-flex!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:5px 9px!important;
+    font-size:11px!important;
+    white-space:nowrap!important;
+  }
+
+  #productManager .admin-product-stock{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    gap:8px!important;
+    margin-top:12px!important;
+  }
+
+  #productManager .admin-branch-box{
+    display:grid!important;
+    grid-template-columns:minmax(92px,1fr) minmax(145px,1.35fr)!important;
+    align-items:center!important;
+    gap:10px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:72px!important;
+    padding:10px 11px!important;
+  }
+
+  #productManager .admin-branch-name{
+    display:block!important;
+    min-width:0!important;
+    min-height:0!important;
+    margin:0!important;
+    font-size:14px!important;
+    line-height:1.35!important;
+    text-align:right!important;
+    white-space:normal!important;
+  }
+
+  #productManager .admin-branch-qty{
+    display:grid!important;
+    grid-template-columns:40px minmax(32px,1fr) 40px!important;
+    align-items:center!important;
+    gap:7px!important;
+    width:100%!important;
+    min-width:0!important;
+    direction:ltr!important;
+  }
+
+  #productManager .admin-branch-qty button{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    padding:0!important;
+    font-size:22px!important;
+    line-height:1!important;
+  }
+
+  #productManager .admin-branch-qty strong{
+    display:block!important;
+    min-width:0!important;
+    font-size:20px!important;
+    text-align:center!important;
+  }
+
+  #productManager .admin-product-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    width:100%!important;
+    max-width:100%!important;
+    gap:9px!important;
+    margin-top:11px!important;
+  }
+
+  #productManager .admin-product-actions .btn{
+    width:100%!important;
+    min-width:0!important;
+    min-height:44px!important;
+    margin:0!important;
+  }
+}
+
+@media (max-width: 360px){
+  #productManager .admin-branch-box{
+    grid-template-columns:1fr!important;
+    text-align:center!important;
+  }
+  #productManager .admin-branch-name{text-align:center!important}
+}
+</style>
+
+
+<style id="v12-hardfix">
+@media (max-width: 390px){
+  #productManager > div > div:nth-child(2) > div{
+    grid-template-columns:1fr !important;
+  }
+  #productManager > div > div:nth-child(2) > div > div:first-child{
+    text-align:center !important;
+  }
+}
+
+
+/* v13 FINAL mobile admin layout reset */
+@media (max-width: 600px){
+  #dashboard.panel.active{overflow-x:hidden!important;}
+  #productManager{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+    gap:12px!important;
+  }
+  #productManager .admin-product-card{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:14px!important;
+    gap:0!important;
+    overflow:hidden!important;
+  }
+  #productManager .admin-product-head{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:6px!important;
+  }
+  #productManager .admin-product-title{width:100%!important;min-width:0!important;}
+  #productManager .admin-product-title h3{
+    width:100%!important;
+    margin:0 0 4px!important;
+    font-size:21px!important;
+    line-height:1.35!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+    text-align:right!important;
+  }
+  #productManager .admin-product-meta{
+    width:100%!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+    white-space:normal!important;
+    text-align:right!important;
+  }
+  #productManager .admin-product-head>.sku{
+    align-self:flex-start!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+    font-size:11px!important;
+    padding:5px 9px!important;
+  }
+  #productManager .admin-product-stock{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:8px!important;
+    margin-top:12px!important;
+  }
+  #productManager .admin-branch-box{
+    display:grid!important;
+    grid-template-columns:minmax(90px,1fr) minmax(150px,1.5fr)!important;
+    align-items:center!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:76px!important;
+    padding:10px!important;
+    gap:10px!important;
+    border-radius:14px!important;
+  }
+  #productManager .admin-branch-name{
+    margin:0!important;
+    min-height:0!important;
+    font-size:15px!important;
+    line-height:1.35!important;
+    justify-content:flex-start!important;
+    text-align:right!important;
+  }
+  #productManager .admin-branch-qty{
+    display:grid!important;
+    grid-template-columns:42px minmax(36px,1fr) 42px!important;
+    width:100%!important;
+    gap:8px!important;
+    direction:ltr!important;
+    align-items:center!important;
+  }
+  #productManager .admin-branch-qty button{
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    padding:0!important;
+    font-size:24px!important;
+    line-height:1!important;
+  }
+  #productManager .admin-branch-qty strong{font-size:22px!important;text-align:center!important;}
+  #productManager .admin-product-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:9px!important;
+    width:100%!important;
+    margin-top:12px!important;
+  }
+  #productManager .admin-product-actions .btn{width:100%!important;min-height:46px!important;}
+}
+@media (max-width: 380px){
+  #productManager .admin-branch-box{grid-template-columns:1fr!important;text-align:center!important;}
+  #productManager .admin-branch-name{justify-content:center!important;text-align:center!important;}
+  #productManager .admin-product-actions{grid-template-columns:1fr!important;}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="row">
+    <div class="brandbox"><div class="brand">BRANCH <span>FLOW</span></div><div class="sub">نموذج مستقل لإدارة التوفر والحجوزات بين الفروع</div></div>
+    <select id="employee" class="role" aria-label="اسم الموظفة">
+      <option value="سارة أحمد">👤 سارة أحمد</option>
+      <option value="نور علي">👤 نور علي</option>
+      <option value="مريم حسن">👤 مريم حسن</option>
+    </select>
+  </div>
+</header>
+
+<main>
+<section id="products" class="panel active">
+  <div class="alert" style="margin-top:0"><b>DEMO مستقل:</b> هذا النموذج غير تابع لأي متجر ولا يستخدم بيانات خاصة أو أنظمة حقيقية.</div><div class="alert green" style="margin-top:0">
+<b>تتبع الموظفة:</b> اختاري اسم الموظفة من الأعلى، وسيُحفظ اسمها تلقائيًا مع كل حجز أو طلب تحويل تجريبي.
+</div><div class="hero">
+    <h1>هل المنتج متوفر؟ وفي أي فرع؟ ✨</h1>
+    <p>ابحثي عن المنتج خلال ثوانٍ، شاهدي توفره في الفرع الثاني والفرع الثالث والفرع الأول، ثم ثبّتي الحجز أو اطلبي تحويله من فرع آخر.</p>
+    <div class="stats">
+      <div class="stat"><b id="sProducts">8</b><span>منتج</span></div>
+      <div class="stat"><b id="sStock">92</b><span>قطعة</span></div>
+      <div class="stat"><b id="sRes">0</b><span>حجز</span></div>
+      <div class="stat"><b id="sLow">9</b><span>منخفض</span></div>
+    </div>
+  </div>
+  <div class="alert green" style="margin-top:-2px;margin-bottom:10px">
+    <b>الفكرة باختصار:</b> بدل سؤال الفروع يدويًا عن توفر المنتج، تظهر الكمية في كل فرع مباشرة، ويمكن تثبيت الحجز أو إنشاء طلب تحويل.
+  </div>
+
+  <div class="toolbar">
+    <input id="q" class="search" placeholder="ابحثي باسم المنتج أو الكود">
+    <select id="branch"><option value="all">كل الفروع</option><option>الفرع الأول</option><option>الفرع الثاني</option><option>الفرع الثالث</option></select>
+  </div>
+  <div id="searchStatus" class="search-status hidden"></div>
+
+  <div class="quick">
+    <button onclick="simulateScan()"><span class="ico">▦</span>مسح باركود</button>
+    <button onclick="openTransfer()"><span class="ico">↔</span>تحويل فرع</button>
+    <button onclick="showPanel('alerts')"><span class="ico">⚠</span>التنبيهات</button>
+    <button onclick="exportData()"><span class="ico">⇩</span>تصدير</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-cat="all">الكل</button>
+    <button class="tab" data-cat="عناية">عناية</button>
+    <button class="tab" data-cat="مكياج">مكياج</button>
+    <button class="tab" data-cat="عطور">عطور</button>
+  </div>
+
+  <div id="productGrid" class="grid">
+    <div class="card"><div class="thumb">☀️<span class="sku">DEMO-001</span></div><div><div class="title">واقي شمس SPF50+</div><div class="meta">عناية • 28,000 د.ع • إجمالي 17</div><div class="stockline"><span class="chip ok">الفرع الأول: 8</span><span class="chip ok">الفرع الثاني: 3</span><span class="chip ok">الفرع الثالث: 6</span></div><div class="actions"><button class="btn primary">حجز</button><button class="btn secondary">رد واتساب</button><button class="btn outline">تحويل</button></div></div></div>
+    <div class="card"><div class="thumb">💧<span class="sku">DEMO-002</span></div><div><div class="title">سيروم ترطيب للوجه</div><div class="meta">عناية • 24,000 د.ع • إجمالي 13</div><div class="stockline"><span class="chip low">الفرع الأول: 2</span><span class="chip ok">الفرع الثاني: 7</span><span class="chip ok">الفرع الثالث: 4</span></div><div class="actions"><button class="btn primary">حجز</button><button class="btn secondary">رد واتساب</button><button class="btn outline">تحويل</button></div></div></div>
+    <div class="card"><div class="thumb">💄<span class="sku">DEMO-003</span></div><div><div class="title">فاونديشن - درجة متوسطة</div><div class="meta">مكياج • 42,000 د.ع • إجمالي 6</div><div class="stockline"><span class="chip ok">الفرع الأول: 5</span><span class="chip low">الفرع الثاني: 1</span><span class="chip no">الفرع الثالث: 0</span></div><div class="actions"><button class="btn primary">حجز</button><button class="btn secondary">رد واتساب</button><button class="btn outline">تحويل</button></div></div></div>
+  </div>
+
+</section>
+
+<section id="reservations" class="panel">
+  <div class="hero"><h1>الحجوزات</h1><p>إدارة حجوزات الزبائن وحالات الاستلام من مكان واحد.</p></div>
+  <div id="orders" class="list"></div>
+</section>
+
+<section id="transfers" class="panel">
+  <div class="hero"><h1>تحويلات الفروع</h1><p>طلبات نقل المنتجات بين الفروع مع حالة كل طلب.</p></div>
+  <div id="transferList" class="list"></div>
+</section>
+
+<section id="alerts" class="panel">
+  <div class="hero"><h1>تنبيهات المخزون</h1><p>منتجات قاربت على النفاد أو غير متوفرة في بعض الفروع.</p></div>
+  <div id="alertsList"></div>
+</section>
+
+<section id="dashboard" class="panel">
+  <div class="hero"><h1>لوحة الإدارة</h1><p>مؤشرات مبسطة للحجوزات، التوفر، وأكثر الفروع نشاطًا.</p></div>
+  <div class="kpi">
+    <div><small>الحجوزات الكلية</small><b id="k1">0</b></div>
+    <div><small>بانتظار الاستلام</small><b id="k2">0</b></div>
+    <div><small>تحويلات مفتوحة</small><b id="k3">0</b></div>
+    <div><small>أصناف منخفضة</small><b id="k4">0</b></div>
+  </div>
+  <div class="section-title">نشاط الحجوزات التجريبي</div>
+  <canvas id="chart" width="520" height="150"></canvas>
+  <div class="section-title">ملخص ذكي</div>
+  <div id="smartSummary" class="alert green"></div>
+  <div class="section-title">سجل العمليات</div>
+  <div id="operationLog" class="list"></div>
+  <div class="section-title">إدارة المنتجات والمخزون</div>
+  <div class="alert">من هنا يمكنك إضافة منتج جديد، تعديل السعر والكميات، وتحديد حد التنبيه لكل منتج. أزرار +1 و-1 تسهّل تسوية المخزون بسرعة.</div>
+  <div id="productManager" class="list"></div>
+  <button class="btn primary wide" style="margin-top:10px" onclick="openProductEditor()">+ إضافة منتج جديد</button>
+   <div class="quick" style="margin-top:10px">
+    <button class="btn outline" onclick="exportDemoData()">تصدير نسخة احتياطية</button>
+    <button class="btn outline" onclick="document.getElementById('importDemoFile').click()">استيراد نسخة</button>
+   </div>
+   <input id="importDemoFile" type="file" accept="application/json" style="display:none" onchange="importDemoData(event)">
+   <button class="btn danger wide" style="margin-top:10px" onclick="resetDemoData()">إعادة ضبط بيانات الديمو</button>
+</section>
+
+<div class="note" style="margin-top:14px;text-align:center">نموذج مستقل لأغراض العرض فقط — غير تابع أو معتمد من أي متجر. جميع أسماء الموظفات والمنتجات والكميات والأسعار والفروع والبيانات المعروضة تجريبية.</div>
+</main>
+
+<nav>
+<button class="nav active" data-panel="products"><span>🛍️</span>المنتجات</button>
+<button class="nav" data-panel="reservations"><span>📋</span>الحجوزات</button>
+<button class="nav" data-panel="transfers"><span>↔️</span>التحويلات</button>
+<button class="nav" data-panel="alerts"><span>⚠️</span>التنبيهات</button>
+<button class="nav" data-panel="dashboard"><span>📊</span>الإدارة</button>
+</nav>
+</div>
+
+<div id="reserveModal" class="modal"><div class="sheet">
+<h3 id="reserveTitle">حجز منتج</h3>
+<div class="field"><label>اسم الزبونة</label><input id="customer" placeholder="مثال: سارة"></div>
+<div class="field"><label>رقم الهاتف</label><input id="phone" inputmode="tel" placeholder="07xxxxxxxxx"></div>
+<div class="field"><label>الفرع</label><select id="reserveBranch"></select></div>
+<div class="field"><label>ملاحظة / درجة / وقت الاستلام</label><input id="reserveNote" placeholder="مثال: درجة 220 — استلام مساءً"></div>
+<button class="btn primary wide" onclick="saveReservation()">تأكيد الحجز</button>
+<button class="btn secondary wide" style="margin-top:7px" onclick="closeModal('reserveModal')">إلغاء</button>
+</div></div>
+
+<div id="transferModal" class="modal"><div class="sheet">
+<h3>طلب تحويل بين الفروع</h3>
+<div class="field"><label>المنتج</label><select id="transferProduct"></select></div>
+<div class="field"><label>من فرع</label><select id="fromBranch"><option>الفرع الأول</option><option>الفرع الثاني</option><option>الفرع الثالث</option></select></div>
+<div class="field"><label>إلى فرع</label><select id="toBranch"><option>الفرع الثاني</option><option>الفرع الأول</option><option>الفرع الثالث</option></select></div>
+<div class="field"><label>الكمية</label><input id="transferQty" type="number" min="1" value="1"></div>
+<button class="btn primary wide" onclick="saveTransfer()">إنشاء الطلب</button>
+<button class="btn secondary wide" style="margin-top:7px" onclick="closeModal('transferModal')">إلغاء</button>
+</div></div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const BR=["الفرع الأول","الفرع الثاني","الفرع الثالث"];
+const defaultProducts=[
+{id:1,sku:"DEMO-001",name:"واقي شمس SPF50+",cat:"عناية",emoji:"☀️",price:28000,stock:{"الفرع الأول":8,"الفرع الثاني":3,"الفرع الثالث":6}},
+{id:2,sku:"DEMO-002",name:"سيروم ترطيب للوجه",cat:"عناية",emoji:"💧",price:24000,stock:{"الفرع الأول":2,"الفرع الثاني":7,"الفرع الثالث":4}},
+{id:3,sku:"DEMO-003",name:"فاونديشن - درجة متوسطة",cat:"مكياج",emoji:"💄",price:42000,stock:{"الفرع الأول":5,"الفرع الثاني":1,"الفرع الثالث":0}},
+{id:4,sku:"DEMO-004",name:"ملمع شفاه",cat:"مكياج",emoji:"💋",price:18000,stock:{"الفرع الأول":9,"الفرع الثاني":6,"الفرع الثالث":3}},
+{id:5,sku:"DEMO-005",name:"تونر للعناية بالبشرة",cat:"عناية",emoji:"🫧",price:26000,stock:{"الفرع الأول":0,"الفرع الثاني":4,"الفرع الثالث":5}},
+{id:6,sku:"DEMO-006",name:"بوكس عطر هدية",cat:"عطور",emoji:"🎁",price:55000,stock:{"الفرع الأول":3,"الفرع الثاني":2,"الفرع الثالث":2}},
+{id:7,sku:"DEMO-007",name:"ماسكارا تكثيف",cat:"مكياج",emoji:"🖤",price:17000,stock:{"الفرع الأول":1,"الفرع الثاني":5,"الفرع الثالث":7}},
+{id:8,sku:"DEMO-008",name:"إيسنس ترطيب",cat:"عناية",emoji:"✨",price:23000,stock:{"الفرع الأول":6,"الفرع الثاني":2,"الفرع الثالث":1}}
+];
+let products=JSON.parse(localStorage.getItem("branchFlowProducts")||"null");
+if(!Array.isArray(products)||!products.length) products=JSON.parse(JSON.stringify(defaultProducts));
+let currentCat="all", selectedProduct=null;
+let reservations=JSON.parse(localStorage.getItem("hudaProReservations")||"[]");
+let transfers=JSON.parse(localStorage.getItem("hudaProTransfers")||"[]");
+let operations=JSON.parse(localStorage.getItem("branchFlowOperations")||"[]");
+function total(p){return Object.values(p.stock).reduce((a,b)=>a+b,0)}
+function lowCount(){
+ let c=0;
+ products.forEach(p=>{
+  let threshold=(p.lowThreshold??3);
+  Object.values(p.stock).forEach(q=>{if(Number(q)<=threshold)c++});
+ });
+ return c;
+}
+function fmt(n){return n.toLocaleString("en-US")+" د.ع"}
+function chip(n,b){let cls=n===0?"no":n<=2?"low":"ok";return `<span class="chip ${cls}">${b}: ${n}</span>`}
+function renderProducts(){
+ let raw=document.getElementById("q").value.trim(), qv=raw.toLowerCase(), br=document.getElementById("branch").value;
+ let list=products.filter(p=>(currentCat==="all"||p.cat===currentCat)&&(`${p.name} ${p.sku}`.toLowerCase().includes(qv))&&(br==="all"||p.stock[br]>0));
+ let allMatches=products.filter(p=>(currentCat==="all"||p.cat===currentCat)&&(`${p.name} ${p.sku}`.toLowerCase().includes(qv)));
+ let g=document.getElementById("productGrid"), status=document.getElementById("searchStatus");g.innerHTML="";
+
+ if(raw){
+   status.classList.remove("hidden","found","missing");
+   if(allMatches.length){
+     let p=allMatches[0];
+     let availableBranches=BR.filter(b=>p.stock[b]>0);
+     let missingBranches=BR.filter(b=>p.stock[b]===0);
+     let pills=BR.map(b=>`<span>${b}: ${p.stock[b]} قطعة</span>`).join("");
+     let availabilityText=availableBranches.length===BR.length
+       ? "متوفر في جميع الفروع."
+       : availableBranches.length
+         ? `متوفر في ${availableBranches.join("، ")}${missingBranches.length?`، وغير متوفر في ${missingBranches.join("، ")}`:""}.`
+         : "غير متوفر حاليًا في أي فرع.";
+     status.classList.add(list.length?"found":"missing");
+     status.innerHTML=`<div class="headline">${list.length?"✓ وجدنا المنتج":"⚠ المنتج موجود لكن فلتر الفرع يخفيه"}</div>
+       <div class="detail"><b>${p.name}</b> — ${availabilityText}</div>
+       <div class="availability">${pills}</div>`;
+   }else{
+     status.classList.add("missing");
+     status.innerHTML=`<div class="headline">لم نجد المنتج</div>
+       <div class="detail">جرّبي كتابة جزء من الاسم أو رقم SKU، أو اختاري “كل الفروع”.</div>`;
+   }
+ }else{
+   status.classList.add("hidden"); status.classList.remove("found","missing"); status.innerHTML="";
+ }
+
+ if(!list.length){
+   g.innerHTML=`<div class="empty-result"><div class="ico">🔍</div><b>لا توجد نتيجة ضمن هذا الاختيار</b><span>إذا كان المنتج موجودًا بفرع آخر، اختاري “كل الفروع” لرؤية التوفر الكامل.</span></div>`;
+ }else{
+   list.forEach(p=>{
+    let stocks=br==="all"?BR.map(b=>chip(p.stock[b],b)).join(""):chip(p.stock[br],br);
+    let availability=br==="all"
+      ? BR.filter(b=>p.stock[b]>0).map(b=>`${b} (${p.stock[b]})`).join(" • ")
+      : `${br}: ${p.stock[br]} قطعة`;
+    g.innerHTML+=`<div class="card"><div class="thumb">${p.emoji}<span class="sku">${p.sku}</span></div><div><div class="title">${p.name}</div><div class="meta">${p.cat} • ${fmt(p.price)} • إجمالي ${total(p)}</div><div class="stockline">${stocks}</div>${raw?`<div class="meta" style="margin-top:6px"><b>التوفر:</b> ${availability}</div>`:""}<div class="actions"><button class="btn primary" onclick="reserve(${p.id})">حجز</button><button class="btn secondary" onclick="copyReply(${p.id})">رد واتساب</button><button class="btn outline" onclick="prefillTransfer(${p.id})">تحويل</button></div></div></div>`
+   });
+ }
+ document.getElementById("sProducts").textContent=products.length;
+ document.getElementById("sStock").textContent=products.reduce((s,p)=>s+total(p),0);
+ document.getElementById("sRes").textContent=reservations.filter(r=>r.status!=="تم الاستلام").length;
+ document.getElementById("sLow").textContent=lowCount();
+}
+function reserve(id){
+ selectedProduct=products.find(p=>p.id===id);let sel=document.getElementById("reserveBranch");sel.innerHTML="";
+ BR.filter(b=>selectedProduct.stock[b]>0).forEach(b=>sel.innerHTML+=`<option>${b}</option>`);
+ document.getElementById("reserveTitle").textContent="حجز: "+selectedProduct.name;openModal("reserveModal");
+}
+function saveProducts(){
+  localStorage.setItem("branchFlowProducts",JSON.stringify(products));
+}
+function logOperation(type, product, branchName, extra=""){
+  operations.unshift({id:Date.now()+Math.random(),employee:document.getElementById("employee").value,type,product,branch:branchName,extra,ts:new Date().toISOString()});
+  operations=operations.slice(0,50);
+  localStorage.setItem("branchFlowOperations",JSON.stringify(operations));
+}
+function formatTime(ts){
+  return new Date(ts).toLocaleString("ar-IQ",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
+}
+function saveReservation(){
+ let name=customer.value.trim(), ph=phone.value.trim(), br=reserveBranch.value;
+ if(!name||!ph){toast("أدخل اسم الزبونة ورقم الهاتف");return}
+ let p=products.find(x=>x.id===selectedProduct.id);
+ if(!p||p.stock[br]<=0){toast("المنتج غير متوفر في هذا الفرع");return}
+ p.stock[br]-=1;
+ reservations.unshift({id:Date.now(),product:selectedProduct.name,sku:selectedProduct.sku,branch:br,name,phone:ph,note:reserveNote.value,status:"بانتظار الاستلام",employee:employee.value,ts:new Date().toISOString(),stockReserved:true});
+ saveProducts();
+ localStorage.setItem("hudaProReservations",JSON.stringify(reservations));
+ logOperation("حجز",selectedProduct.name,br,`للزبونة ${name} • تم حجز قطعة من المخزون`);
+ closeModal("reserveModal");customer.value=phone.value=reserveNote.value="";refresh();toast("تم تسجيل الحجز وحجز قطعة من المخزون ✓");
+}
+function renderReservations(){
+ orders.innerHTML=reservations.length?"":"<div class='alert'>لا توجد حجوزات تجريبية بعد.</div>";
+ reservations.forEach(o=>orders.innerHTML+=`<div class="item"><div class="item-top"><b>${o.product}</b><span class="pill ${o.status==="تم الاستلام"?"done":"pending"}">${o.status}</span></div><div class="meta">${o.name} • ${o.phone} • ${o.branch}</div><div class="meta"><b>نفذت الحجز:</b> ${o.employee||"موظفة تجريبية"}</div>${o.note?`<div class="note">${o.note}</div>`:""}<div class="actions"><button class="btn secondary" onclick="markDone(${o.id})">تم الاستلام</button><button class="btn outline" onclick="whatsCustomer(${o.id})">رسالة للزبونة</button><button class="btn danger" onclick="deleteRes(${o.id})">حذف</button></div></div>`);
+}
+function markDone(id){
+ let x=reservations.find(r=>r.id===id); if(!x)return;
+ if(x.status==="تم الاستلام"){toast("هذا الحجز مستلم بالفعل");return}
+ if(!x.stockReserved){
+   let p=products.find(p=>p.sku===x.sku);
+   if(p&&p.stock[x.branch]>0){p.stock[x.branch]-=1;saveProducts();x.stockReserved=true}
+ }
+ x.status="تم الاستلام";
+ logOperation("إتمام حجز",x.product,x.branch,`استلام ${x.name}`);
+ saveAll();
+}
+function deleteRes(id){
+ let x=reservations.find(r=>r.id===id); if(!x)return;
+ if(x.status!=="تم الاستلام"&&x.stockReserved){
+   let p=products.find(p=>p.sku===x.sku);
+   if(p){p.stock[x.branch]+=1;saveProducts()}
+   logOperation("إلغاء حجز",x.product,x.branch,`أعيدت قطعة للمخزون • ${x.name}`);
+ }
+ reservations=reservations.filter(r=>r.id!==id);
+ saveAll();
+}
+function whatsCustomer(id){let o=reservations.find(r=>r.id===id);let txt=`مرحباً ${o.name} 🌸 تم تثبيت حجز ${o.product} في فرع ${o.branch}.`;navigator.clipboard?.writeText(txt);toast("تم نسخ رسالة الزبونة")}
+function copyReply(id){
+ let p=products.find(x=>x.id===id),br=branch.value;
+ let txt=br==="all"?`نعم 🌸 ${p.name} متوفر حاليًا في بعض فروعنا بسعر ${fmt(p.price)}. ارسلي لنا المنطقة المناسبة لنحدد أقرب فرع ونثبت الحجز.`:`نعم 🌸 ${p.name} متوفر حاليًا في فرع ${br} بسعر ${fmt(p.price)}. هل نثبت الحجز؟`;
+ navigator.clipboard?.writeText(txt);toast("تم نسخ الرد");
+}
+function openTransfer(){fillTransferProducts();openModal("transferModal")}
+function prefillTransfer(id){fillTransferProducts();transferProduct.value=id;openModal("transferModal")}
+function fillTransferProducts(){transferProduct.innerHTML=products.map(p=>`<option value="${p.id}">${p.name} — ${p.sku}</option>`).join("")}
+function saveTransfer(){
+ let pid=+transferProduct.value,from=fromBranch.value,to=toBranch.value,qty=Math.max(1,+transferQty.value||1);
+ if(from===to){toast("اختاري فرعين مختلفين");return}
+ let p=products.find(x=>x.id===pid);
+ if(p.stock[from]<qty){toast("الكمية غير متوفرة في الفرع المصدر");return}
+ transfers.unshift({id:Date.now(),product:p.name,sku:p.sku,from,to,qty,status:"جديد",employee:employee.value,ts:new Date().toISOString()});
+ localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));logOperation("طلب تحويل",p.name,`${from} ← ${to}`,`${qty} قطعة`);closeModal("transferModal");renderTransfers();dashboard();toast("تم إنشاء طلب التحويل");
+}
+function renderTransfers(){
+ transferList.innerHTML=transfers.length?"":"<div class='alert'>لا توجد تحويلات تجريبية بعد.</div>";
+ transfers.forEach(t=>transferList.innerHTML+=`<div class="item"><div class="item-top"><b>${t.product}</b><span class="pill ${t.status==="مكتمل"?"done":"pending"}">${t.status}</span></div><div class="meta">${t.qty} قطعة • ${t.from} ← ${t.to}</div><div class="meta"><b>أنشأت التحويل:</b> ${t.employee||"موظفة تجريبية"}</div><div class="actions"><button class="btn secondary" onclick="completeTransfer(${t.id})">إكمال التحويل</button></div></div>`);
+}
+function completeTransfer(id){
+ let t=transfers.find(x=>x.id===id); if(t.status==="مكتمل")return;
+ let p=products.find(x=>x.sku===t.sku); if(p.stock[t.from]<t.qty){toast("المخزون تغير ولا يكفي");return}
+ p.stock[t.from]-=t.qty;p.stock[t.to]+=t.qty;t.status="مكتمل";logOperation("إكمال تحويل",t.product,`${t.from} ← ${t.to}`,`${t.qty} قطعة`);saveAll();toast("تم تحديث مخزون الفرعين");
+}
+function renderAlerts(){
+ alertsList.innerHTML="";
+ products.forEach(p=>BR.forEach(b=>{
+  let n=p.stock[b];
+  if(n===0) alertsList.innerHTML+=`<div class="alert red"><b>${p.name}</b><br>غير متوفر في فرع ${b}. يوجد ${total(p)-n} قطعة في الفروع الأخرى.</div>`;
+  else if(n<=2) alertsList.innerHTML+=`<div class="alert"><b>${p.name}</b><br>باقي ${n} فقط في فرع ${b}. يفضّل إعادة التعبئة أو التحويل.</div>`;
+ }));
+ if(!alertsList.innerHTML)alertsList.innerHTML="<div class='alert green'>لا توجد تنبيهات حرجة حاليًا.</div>";
+}
+
+
+
+
+let pendingStockChange={id:null,delta:0};
+
+function openBranchStockModal(id,delta){
+ let p=products.find(x=>x.id===id); if(!p)return;
+ pendingStockChange={id,delta};
+ document.getElementById("branchStockTitle").textContent=(delta>0?"إضافة 1 للمخزون — ":"خصم 1 من المخزون — ")+p.name;
+ let threshold=(p.lowThreshold??3);
+ document.getElementById("branchStockList").innerHTML=Object.entries(p.stock).map(([br,q])=>{
+   let cls=Number(q)===0?"zero":Number(q)<=threshold?"low":"";
+   return `<button type="button" class="branch-action ${cls}" onclick="applyBranchStock('${br}')">
+     <span>${br}</span>
+     <span class="qty">${q} ${delta>0?"← "+(Number(q)+1):"← "+Math.max(0,Number(q)-1)}</span>
+   </button>`;
+ }).join("");
+ document.getElementById("branchStockModal").classList.add("show");
+}
+
+function closeBranchStockModal(){
+ document.getElementById("branchStockModal").classList.remove("show");
+ pendingStockChange={id:null,delta:0};
+}
+
+function applyBranchStock(branch){
+ let p=products.find(x=>x.id===pendingStockChange.id); if(!p || !(branch in p.stock))return;
+ let before=Number(p.stock[branch]||0);
+ let after=Math.max(0,before+pendingStockChange.delta);
+ if(after===before){
+   toast("المخزون صفر بالفعل");
+   return;
+ }
+ p.stock[branch]=after;
+ saveProducts();
+ logOperation("تعديل مخزون",p.name,branch,`${before} ← ${after}`);
+ refresh();
+ renderProductManager();
+ closeBranchStockModal();
+ toast(`${p.name} • ${branch}: ${after}`);
+}
+
+function adjustStockDirect(id,branch,delta){
+ let p=products.find(x=>x.id===id); if(!p || !(branch in p.stock)) return;
+ let before=Number(p.stock[branch]||0);
+ let after=Math.max(0,before+delta);
+ if(after===before){
+  if(delta<0) toast("المخزون صفر بالفعل");
+  return;
+ }
+ p.stock[branch]=after;
+ saveProducts();
+ logOperation("تعديل مخزون",p.name,branch,`${before} ← ${after}`);
+ refresh();
+ renderProductManager();
+ toast(`${p.name} • ${branch}: ${after}`);
+}
+
+function renderProductManager(){
+ let box=document.getElementById("productManager"); if(!box)return;
+ box.style.display="flex";
+ box.style.flexDirection="column";
+ box.style.gap="12px";
+ box.style.width="100%";
+ box.style.minWidth="0";
+
+ box.innerHTML=products.map(p=>{
+  let threshold=Number(p.lowThreshold??3);
+  let total=Object.values(p.stock||{}).reduce((a,b)=>a+Number(b||0),0);
+  let branches=Object.entries(p.stock||{}).map(([br,q])=>{
+   let nq=Number(q||0);
+   let bg=nq===0?"#fff0ef":nq<=threshold?"#fff8e8":"#fafafa";
+   return `<div style="display:grid;grid-template-columns:minmax(90px,1fr) minmax(155px,1.45fr);align-items:center;gap:10px;width:100%;min-width:0;border:1px solid #e7e2db;border-radius:16px;padding:10px 12px;background:${bg}">
+      <div style="font-size:14px;line-height:1.35;color:#666;text-align:right;white-space:normal">${br}</div>
+      <div style="display:grid;grid-template-columns:42px minmax(34px,1fr) 42px;align-items:center;gap:8px;direction:ltr;width:100%;min-width:0">
+        <button type="button" onclick="adjustStockDirect(${p.id},'${br}',-1)" style="width:42px;height:42px;padding:0;border:1px solid #ddd;border-radius:12px;background:#fff;color:#2878f0;font-size:24px;font-weight:700;line-height:1">−</button>
+        <strong style="font-size:21px;text-align:center;line-height:1">${nq}</strong>
+        <button type="button" onclick="adjustStockDirect(${p.id},'${br}',1)" style="width:42px;height:42px;padding:0;border:1px solid #ddd;border-radius:12px;background:#fff;color:#2878f0;font-size:24px;font-weight:700;line-height:1">+</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  return `<div style="display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;border:1px solid #e7e2db;border-radius:20px;padding:14px;background:#fff;overflow:hidden">
+    <div style="display:flex;flex-direction:column;width:100%;min-width:0;gap:6px;margin-bottom:12px">
+      <h3 style="display:block;width:100%;max-width:100%;margin:0;font-size:20px;line-height:1.4;white-space:normal;overflow-wrap:anywhere;word-break:normal;text-align:right">${p.name}</h3>
+      <div style="font-size:12px;line-height:1.6;color:#777;white-space:normal;overflow-wrap:anywhere;text-align:right">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${threshold}</div>
+      <div style="align-self:flex-start;display:inline-flex;max-width:100%;padding:5px 9px;border-radius:999px;background:#f3f3f3;font-size:11px;direction:ltr;white-space:nowrap">${p.sku}</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;width:100%;min-width:0">${branches}</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;margin-top:12px">
+      <button class="btn outline" onclick="openProductEditor(${p.id})" style="width:100%;min-height:44px;margin:0">تعديل</button>
+      <button class="btn danger" onclick="deleteProduct(${p.id})" style="width:100%;min-height:44px;margin:0">حذف</button>
+    </div>
+  </div>`;
+ }).join("");
+}
+function openProductEditor(id=null){
+ let p=id?products.find(x=>x.id===id):null;
+ document.getElementById("peId").value=p?p.id:"";
+ document.getElementById("productEditorTitle").textContent=p?"تعديل المنتج":"إضافة منتج";
+ document.getElementById("peName").value=p?p.name:"";
+ document.getElementById("peSku").value=p?p.sku:"";
+ document.getElementById("peCat").value=p?p.cat:"عناية";
+ document.getElementById("pePrice").value=p?p.price:"";
+ document.getElementById("peIcon").value=p?(p.emoji||p.icon||"✨"):"✨";
+ let ks=p?Object.keys(p.stock):["الفرع الأول","الفرع الثاني","الفرع الثالث"];
+ document.getElementById("peB1").value=p?p.stock[ks[0]]:0;
+ document.getElementById("peB2").value=p?p.stock[ks[1]]:0;
+ document.getElementById("peB3").value=p?p.stock[ks[2]]:0;
+ document.getElementById("peLow").value=p?(p.lowThreshold??3):3;
+ document.getElementById("productEditorModal").classList.add("show");
+}
+function saveProductEditor(){
+ let name=document.getElementById("peName").value.trim(), sku=document.getElementById("peSku").value.trim();
+ if(!name||!sku){toast("أدخل اسم المنتج والكود");return}
+ let id=document.getElementById("peId").value?Number(document.getElementById("peId").value):(Math.max(0,...products.map(p=>p.id))+1);
+ if(products.some(p=>String(p.sku).toLowerCase()===sku.toLowerCase()&&p.id!==id)){toast("هذا الكود مستخدم لمنتج آخر");return}
+ let stock={"الفرع الأول":Math.max(0,Number(document.getElementById("peB1").value||0)),"الفرع الثاني":Math.max(0,Number(document.getElementById("peB2").value||0)),"الفرع الثالث":Math.max(0,Number(document.getElementById("peB3").value||0))};
+ let existing=products.find(p=>p.id===id);
+ let obj={id,name,sku,cat:document.getElementById("peCat").value,price:Number(document.getElementById("pePrice").value||0),emoji:document.getElementById("peIcon").value||"✨",stock,lowThreshold:Math.max(0,Number(document.getElementById("peLow").value||3))};
+ if(existing) Object.assign(existing,obj); else products.push(obj);
+ saveProducts(); closeModal("productEditorModal"); refresh(); renderProductManager(); toast("تم حفظ المنتج");
+}
+function deleteProduct(id){
+ let p=products.find(x=>x.id===id); if(!p)return;
+ products=products.filter(x=>x.id!==id);
+ saveProducts(); logOperation("حذف منتج",p.name,"الإدارة","حذف من نسخة الديمو");
+ refresh(); renderProductManager(); toast("تم حذف المنتج");
+}
+
+
+
+function quickStock(id,delta){
+  let p=products.find(x=>x.id===id); if(!p)return;
+  let br=prompt("اكتب اسم الفرع: الفرع الأول / الفرع الثاني / الفرع الثالث","الفرع الأول");
+  if(!br||!(br in p.stock)) return;
+  let before=Number(p.stock[br]||0);
+  let after=Math.max(0,before+delta);
+  p.stock[br]=after;
+  saveProducts();
+  logOperation("تعديل مخزون",p.name,br,`${before} ← ${after}`);
+  refresh(); renderProductManager();
+  toast(`تم تحديث ${br}: ${after}`);
+}
+
+function exportDemoData(){
+  let payload={
+    exportedAt:new Date().toISOString(),
+    products,
+    reservations,
+    transfers,
+    operations,
+    employee:document.getElementById("employee").value
+  };
+  let blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  let a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="branch-flow-backup.json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),500);
+  toast("تم تجهيز النسخة الاحتياطية");
+}
+function importDemoData(event){
+  let file=event.target.files&&event.target.files[0]; if(!file)return;
+  let reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      let d=JSON.parse(reader.result);
+      if(!Array.isArray(d.products)) throw new Error("bad");
+      products=d.products;
+      reservations=Array.isArray(d.reservations)?d.reservations:[];
+      transfers=Array.isArray(d.transfers)?d.transfers:[];
+      operations=Array.isArray(d.operations)?d.operations:[];
+      if(d.employee && document.getElementById("employee")) document.getElementById("employee").value=d.employee;
+      saveProducts();
+      localStorage.setItem("hudaProReservations",JSON.stringify(reservations));
+      localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));
+      localStorage.setItem("branchFlowOperations",JSON.stringify(operations));
+      refresh(); renderProductManager(); toast("تم استيراد النسخة ✓");
+    }catch(e){toast("ملف النسخة الاحتياطية غير صالح")}
+    event.target.value="";
+  };
+  reader.readAsText(file);
+}
+function resetDemoData(){
+  if(!confirm("سيتم حذف التغييرات التجريبية الحالية وإرجاع بيانات الديمو الأصلية. هل تريد المتابعة؟")) return;
+  products=JSON.parse(JSON.stringify(defaultProducts));
+  reservations=[]; transfers=[]; operations=[];
+  localStorage.removeItem("branchFlowProducts");
+  localStorage.removeItem("hudaProReservations");
+  localStorage.removeItem("hudaProTransfers");
+  localStorage.removeItem("branchFlowOperations");
+  refresh(); renderProductManager(); toast("تمت إعادة ضبط بيانات الديمو");
+}
+
+function dashboard(){
+ k1.textContent=reservations.length;k2.textContent=reservations.filter(x=>x.status!=="تم الاستلام").length;k3.textContent=transfers.filter(x=>x.status!=="مكتمل").length;k4.textContent=lowCount();
+ let pending=reservations.filter(x=>x.status!=="تم الاستلام").length;
+ let top={};reservations.forEach(x=>top[x.branch]=(top[x.branch]||0)+1);let topB=Object.keys(top).sort((a,b)=>top[b]-top[a])[0]||"لا بيانات";
+ smartSummary.textContent=`يوجد ${pending} حجز بانتظار الاستلام. أكثر فرع نشاطًا في بيانات الديمو: ${topB}. ويوجد ${lowCount()} حالة مخزون منخفض أو صفر عبر الفروع.`;
+ renderOperationLog();
+ renderProductManager();
+ drawChart();
+}
+function renderOperationLog(){
+ let box=document.getElementById("operationLog");
+ if(!box)return;
+ box.innerHTML=operations.length?"":"<div class='alert'>لا توجد عمليات مسجلة بعد. جرّبي حجز منتج أو إنشاء تحويل.</div>";
+ operations.slice(0,12).forEach(o=>{
+   box.innerHTML+=`<div class="item"><div class="item-top"><b>${o.type}</b><span class="pill">${formatTime(o.ts)}</span></div><div class="meta">${o.product} • ${o.branch}</div><div class="note"><b>الموظفة:</b> ${o.employee}${o.extra?` • ${o.extra}`:""}</div></div>`;
+ });
+}
+function drawChart(){
+ let c=chart,ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);
+ let vals=[2,4,3,6,5,8,Math.max(1,reservations.length)];let max=Math.max(...vals,8);
+ ctx.strokeStyle="#111";ctx.lineWidth=3;ctx.beginPath();
+ vals.forEach((v,i)=>{let x=30+i*(460/(vals.length-1)),y=125-(v/max)*95;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});
+ ctx.stroke();ctx.fillStyle="#777";ctx.font="11px sans-serif";ctx.fillText("نشاط آخر 7 أيام — بيانات تجريبية",20,142);
+}
+function simulateScan(){
+ let p=products[Math.floor(Math.random()*products.length)];q.value=p.sku;renderProducts();toast("تمت محاكاة مسح الباركود: "+p.sku)
+}
+function exportData(){
+ let data={reservations,transfers,exportedAt:new Date().toISOString()};let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="branch-flow-demo-export.json";a.click();URL.revokeObjectURL(a.href);toast("تم تجهيز ملف التصدير")
+}
+function showPanel(id){
+ document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.panel===id));
+ if(id==="alerts")renderAlerts();if(id==="dashboard")dashboard();
+}
+function openModal(id){document.getElementById(id).classList.add("show")}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+function toast(t){let x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",1700)}
+function saveAll(){saveProducts();localStorage.setItem("hudaProReservations",JSON.stringify(reservations));localStorage.setItem("hudaProTransfers",JSON.stringify(transfers));localStorage.setItem("branchFlowOperations",JSON.stringify(operations));refresh()}
+function refresh(){renderProducts();renderReservations();renderTransfers();renderAlerts();dashboard();applyRole()}
+function applyRole(){}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentCat=b.dataset.cat;renderProducts()});
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
+q.oninput=renderProducts;branch.onchange=renderProducts;employee.onchange=()=>{localStorage.setItem("branchFlowEmployee",employee.value);toast("تم اختيار "+employee.value)};
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+let savedEmployee=localStorage.getItem("branchFlowEmployee");if(savedEmployee&&[...employee.options].some(o=>o.value===savedEmployee))employee.value=savedEmployee;
+refresh();
+</script>
+
+<div id="productEditorModal" class="modal">
+ <div class="sheet">
+  <div class="sheet-head"><b id="productEditorTitle">إضافة منتج</b><button class="x" onclick="closeModal('productEditorModal')">×</button></div>
+  <div class="form">
+   <input id="peId" type="hidden">
+   <label>اسم المنتج</label><input id="peName">
+   <label>الكود</label><input id="peSku">
+   <label>الفئة</label>
+   <select id="peCat"><option>عناية</option><option>مكياج</option><option>عطور</option></select>
+   <label>السعر</label><input id="pePrice" inputmode="numeric">
+   <label>رمز/إيموجي</label><input id="peIcon" placeholder="✨">
+   <label>الفرع الأول</label><input id="peB1" inputmode="numeric">
+   <label>الفرع الثاني</label><input id="peB2" inputmode="numeric">
+   <label>الفرع الثالث</label><input id="peB3" inputmode="numeric">
+   <label>حد التنبيه للمخزون المنخفض</label><input id="peLow" inputmode="numeric" value="3">
+   <button class="btn primary" onclick="saveProductEditor()">حفظ المنتج</button>
+  </div>
+ </div>
+</div>
+
+
+<div id="branchStockModal" class="modal">
+  <div class="modalbox">
+    <div class="row">
+      <h2 id="branchStockTitle">تعديل المخزون</h2>
+      <button class="iconbtn" type="button" onclick="closeBranchStockModal()">×</button>
+    </div>
+    <div class="notice green">اختر الفرع الذي تريد تعديل مخزونه. التغيير سيُسجَّل تلقائيًا في سجل العمليات.</div>
+    <div id="branchStockList" class="branch-picker"></div>
+  </div>
+</div>
+
+</body>
+</html>
