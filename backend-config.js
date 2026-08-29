@@ -1,8 +1,6 @@
-// Branch Flow backend configuration.
-// Fill these two values from Supabase > Project Settings > API.
 window.BRANCH_FLOW_BACKEND = {
-  supabaseUrl: "PASTE_SUPABASE_PROJECT_URL_HERE",
-  anonKey: "PASTE_SUPABASE_ANON_KEY_HERE",
+  supabaseUrl: "https://qnclpnpdqptldydqodwr.supabase.co",
+  anonKey: "sb_publishable_ajSMhBBA3kzqxKVhy1sShw_5yFBanCs",
   stateId: "branch-flow",
   syncIntervalMs: 10000
 };
