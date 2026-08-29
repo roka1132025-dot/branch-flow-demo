@@ -136,7 +136,400 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
 }
 @media (max-width:360px){.admin-product-stock{grid-template-columns:1fr}}
 
+
+/* v8 iPhone admin card layout fix */
+#productManager .admin-product-card{display:block!important;grid-template-columns:none!important;gap:0!important;width:100%;overflow:hidden}
+#productManager .admin-product-head{display:flex;width:100%;align-items:flex-start;gap:8px}
+#productManager .admin-product-title{width:100%;min-width:0}
+#productManager .admin-product-head>.sku{position:static!important;flex:0 0 auto;max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#productManager .admin-product-stock{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%;gap:6px;margin-top:10px}
+#productManager .admin-branch-box{width:auto;min-width:0;padding:8px 4px}
+#productManager .admin-branch-name{white-space:normal;line-height:1.25;min-height:30px;display:flex;align-items:center;justify-content:center}
+#productManager .admin-branch-qty{direction:ltr;display:grid;grid-template-columns:30px minmax(20px,1fr) 30px;gap:3px}
+#productManager .admin-product-actions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%;gap:7px;margin-top:9px}
+@media(max-width:390px){
+ #productManager .admin-product-title h3{font-size:16px;line-height:1.3}
+ #productManager .admin-product-meta{font-size:10.5px;line-height:1.45}
+ #productManager .admin-product-stock{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #productManager .admin-branch-name{font-size:10px}
+ #productManager .admin-branch-qty{grid-template-columns:28px minmax(18px,1fr) 28px}
+ #productManager .admin-branch-qty button{width:28px;height:30px;font-size:18px}
+ #productManager .admin-branch-qty strong{font-size:16px}
+}
+@media(max-width:330px){#productManager .admin-product-stock{grid-template-columns:1fr!important}}
+
+
+/* v9 definitive admin layout: isolated from generic product .card grid */
+#productManager{display:grid;grid-template-columns:1fr;gap:10px;width:100%}
+#productManager .admin-product-card{display:block!important;width:100%!important;max-width:100%!important;border:1px solid var(--line);border-radius:18px;padding:12px;background:#fff;overflow:hidden}
+#productManager .admin-product-head{display:flex!important;flex-direction:row!important;align-items:flex-start!important;justify-content:space-between!important;width:100%!important;gap:10px!important}
+#productManager .admin-product-title{flex:1 1 auto!important;min-width:0!important;width:auto!important}
+#productManager .admin-product-title h3{margin:0 0 4px!important;font-size:18px!important;line-height:1.35!important;overflow-wrap:anywhere}
+#productManager .admin-product-meta{font-size:11px!important;line-height:1.55!important;color:#777!important}
+#productManager .admin-product-head>.sku{position:static!important;inset:auto!important;display:inline-block!important;flex:0 0 auto!important;max-width:95px!important;font-size:10px!important;border-radius:999px!important;padding:5px 8px!important;background:#f3f3f3!important;white-space:nowrap!important}
+#productManager .admin-product-stock{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;width:100%!important;margin:10px 0 0!important}
+#productManager .admin-branch-box{display:block!important;width:100%!important;min-width:0!important;border:1px solid var(--line)!important;border-radius:14px!important;padding:7px 4px!important;text-align:center!important;background:#fafafa!important}
+#productManager .admin-branch-box.low{background:#fff8e8!important}
+#productManager .admin-branch-box.zero{background:#fff0ef!important}
+#productManager .admin-branch-name{font-size:10px!important;line-height:1.25!important;min-height:25px!important;display:flex!important;align-items:center!important;justify-content:center!important;white-space:normal!important}
+#productManager .admin-branch-qty{direction:ltr!important;display:grid!important;grid-template-columns:28px minmax(20px,1fr) 28px!important;align-items:center!important;gap:3px!important;width:100%!important}
+#productManager .admin-branch-qty button{width:28px!important;height:30px!important;min-width:0!important;padding:0!important;border:1px solid var(--line)!important;border-radius:9px!important;background:#fff!important;color:#2878f0!important;font-size:18px!important;font-weight:700!important}
+#productManager .admin-branch-qty strong{font-size:16px!important;line-height:1!important}
+#productManager .admin-product-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;width:100%!important;margin-top:9px!important}
+#productManager .admin-product-actions .btn{width:100%!important;min-height:40px!important}
+@media(max-width:360px){#productManager .admin-product-stock{grid-template-columns:1fr!important}#productManager .admin-branch-name{min-height:0!important}#productManager .admin-branch-qty{grid-template-columns:34px 1fr 34px!important}}
+
 </style>
+
+<style>
+/* v10 — final mobile admin responsive fix */
+#productManager{display:flex!important;flex-direction:column!important;gap:12px!important;width:100%!important;min-width:0!important}
+#productManager .admin-product-card{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;padding:14px!important;overflow:hidden!important}
+#productManager .admin-product-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:10px!important;width:100%!important}
+#productManager .admin-product-title{min-width:0!important;width:100%!important}
+#productManager .admin-product-title h3{font-size:20px!important;line-height:1.3!important;margin:0 0 5px!important;white-space:normal!important;overflow-wrap:break-word!important;word-break:normal!important}
+#productManager .admin-product-meta{font-size:12px!important;line-height:1.55!important;white-space:normal!important}
+#productManager .admin-product-head>.sku{position:static!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;max-width:none!important;min-width:78px!important;white-space:nowrap!important;font-size:11px!important;padding:6px 9px!important}
+#productManager .admin-product-stock{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin-top:12px!important}
+#productManager .admin-branch-box{display:flex!important;flex-direction:column!important;justify-content:center!important;min-width:0!important;width:100%!important;min-height:98px!important;padding:9px 5px!important}
+#productManager .admin-branch-name{font-size:12px!important;line-height:1.3!important;min-height:32px!important;margin-bottom:6px!important;white-space:normal!important}
+#productManager .admin-branch-qty{display:grid!important;grid-template-columns:34px minmax(22px,1fr) 34px!important;align-items:center!important;gap:4px!important;width:100%!important;direction:ltr!important}
+#productManager .admin-branch-qty button{width:34px!important;height:36px!important;border-radius:10px!important;font-size:21px!important}
+#productManager .admin-branch-qty strong{font-size:19px!important;text-align:center!important}
+#productManager .admin-product-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;width:100%!important;margin-top:11px!important}
+#productManager .admin-product-actions .btn{min-height:44px!important;font-size:15px!important}
+@media(max-width:430px){
+  #productManager .admin-product-card{padding:12px!important}
+  #productManager .admin-product-head{grid-template-columns:1fr!important}
+  #productManager .admin-product-head>.sku{justify-self:start!important;min-width:0!important}
+  #productManager .admin-product-title h3{font-size:19px!important}
+  #productManager .admin-product-stock{grid-template-columns:1fr!important;gap:8px!important}
+  #productManager .admin-branch-box{min-height:78px!important;display:grid!important;grid-template-columns:minmax(90px,1fr) minmax(150px,1.4fr)!important;align-items:center!important;gap:8px!important;text-align:right!important;padding:10px!important}
+  #productManager .admin-branch-name{min-height:0!important;margin:0!important;font-size:14px!important;justify-content:flex-start!important}
+  #productManager .admin-branch-qty{grid-template-columns:40px minmax(30px,1fr) 40px!important;gap:7px!important}
+  #productManager .admin-branch-qty button{width:40px!important;height:40px!important;font-size:22px!important}
+  #productManager .admin-branch-qty strong{font-size:20px!important}
+}
+@media(max-width:350px){
+  #productManager .admin-branch-box{grid-template-columns:1fr!important;text-align:center!important}
+  #productManager .admin-branch-name{justify-content:center!important}
+}
+</style>
+
+
+<style>
+/* v11 — force admin product cards into a clean single-column mobile layout */
+@media (max-width: 600px){
+  #productManager,
+  #productManager *{box-sizing:border-box!important}
+
+  #productManager{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+
+  #productManager .admin-product-card{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0 0 12px!important;
+    padding:14px!important;
+    overflow:hidden!important;
+  }
+
+  #productManager .admin-product-head{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:7px!important;
+    align-items:stretch!important;
+  }
+
+  #productManager .admin-product-title{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  #productManager .admin-product-title h3{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 5px!important;
+    font-size:19px!important;
+    line-height:1.4!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+
+  #productManager .admin-product-meta{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  #productManager .admin-product-head > .sku{
+    position:static!important;
+    inset:auto!important;
+    align-self:flex-start!important;
+    display:inline-flex!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:5px 9px!important;
+    font-size:11px!important;
+    white-space:nowrap!important;
+  }
+
+  #productManager .admin-product-stock{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    gap:8px!important;
+    margin-top:12px!important;
+  }
+
+  #productManager .admin-branch-box{
+    display:grid!important;
+    grid-template-columns:minmax(92px,1fr) minmax(145px,1.35fr)!important;
+    align-items:center!important;
+    gap:10px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:72px!important;
+    padding:10px 11px!important;
+  }
+
+  #productManager .admin-branch-name{
+    display:block!important;
+    min-width:0!important;
+    min-height:0!important;
+    margin:0!important;
+    font-size:14px!important;
+    line-height:1.35!important;
+    text-align:right!important;
+    white-space:normal!important;
+  }
+
+  #productManager .admin-branch-qty{
+    display:grid!important;
+    grid-template-columns:40px minmax(32px,1fr) 40px!important;
+    align-items:center!important;
+    gap:7px!important;
+    width:100%!important;
+    min-width:0!important;
+    direction:ltr!important;
+  }
+
+  #productManager .admin-branch-qty button{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    padding:0!important;
+    font-size:22px!important;
+    line-height:1!important;
+  }
+
+  #productManager .admin-branch-qty strong{
+    display:block!important;
+    min-width:0!important;
+    font-size:20px!important;
+    text-align:center!important;
+  }
+
+  #productManager .admin-product-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    width:100%!important;
+    max-width:100%!important;
+    gap:9px!important;
+    margin-top:11px!important;
+  }
+
+  #productManager .admin-product-actions .btn{
+    width:100%!important;
+    min-width:0!important;
+    min-height:44px!important;
+    margin:0!important;
+  }
+}
+
+@media (max-width: 360px){
+  #productManager .admin-branch-box{
+    grid-template-columns:1fr!important;
+    text-align:center!important;
+  }
+  #productManager .admin-branch-name{text-align:center!important}
+}
+</style>
+
+
+<style id="v12-hardfix">
+@media (max-width: 390px){
+  #productManager > div > div:nth-child(2) > div{
+    grid-template-columns:1fr !important;
+  }
+  #productManager > div > div:nth-child(2) > div > div:first-child{
+    text-align:center !important;
+  }
+}
+
+
+/* v13 FINAL mobile admin layout reset */
+@media (max-width: 600px){
+  #dashboard.panel.active{overflow-x:hidden!important;}
+  #productManager{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+    gap:12px!important;
+  }
+  #productManager .admin-product-card{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:14px!important;
+    gap:0!important;
+    overflow:hidden!important;
+  }
+  #productManager .admin-product-head{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:6px!important;
+  }
+  #productManager .admin-product-title{width:100%!important;min-width:0!important;}
+  #productManager .admin-product-title h3{
+    width:100%!important;
+    margin:0 0 4px!important;
+    font-size:21px!important;
+    line-height:1.35!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+    text-align:right!important;
+  }
+  #productManager .admin-product-meta{
+    width:100%!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+    white-space:normal!important;
+    text-align:right!important;
+  }
+  #productManager .admin-product-head>.sku{
+    align-self:flex-start!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+    font-size:11px!important;
+    padding:5px 9px!important;
+  }
+  #productManager .admin-product-stock{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:8px!important;
+    margin-top:12px!important;
+  }
+  #productManager .admin-branch-box{
+    display:grid!important;
+    grid-template-columns:minmax(90px,1fr) minmax(150px,1.5fr)!important;
+    align-items:center!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:76px!important;
+    padding:10px!important;
+    gap:10px!important;
+    border-radius:14px!important;
+  }
+  #productManager .admin-branch-name{
+    margin:0!important;
+    min-height:0!important;
+    font-size:15px!important;
+    line-height:1.35!important;
+    justify-content:flex-start!important;
+    text-align:right!important;
+  }
+  #productManager .admin-branch-qty{
+    display:grid!important;
+    grid-template-columns:42px minmax(36px,1fr) 42px!important;
+    width:100%!important;
+    gap:8px!important;
+    direction:ltr!important;
+    align-items:center!important;
+  }
+  #productManager .admin-branch-qty button{
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    padding:0!important;
+    font-size:24px!important;
+    line-height:1!important;
+  }
+  #productManager .admin-branch-qty strong{font-size:22px!important;text-align:center!important;}
+  #productManager .admin-product-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:9px!important;
+    width:100%!important;
+    margin-top:12px!important;
+  }
+  #productManager .admin-product-actions .btn{width:100%!important;min-height:46px!important;}
+}
+@media (max-width: 380px){
+  #productManager .admin-branch-box{grid-template-columns:1fr!important;text-align:center!important;}
+  #productManager .admin-branch-name{justify-content:center!important;text-align:center!important;}
+  #productManager .admin-product-actions{grid-template-columns:1fr!important;}
+}
+</style>
+
+
+<style id="v14-polish">
+html,body{max-width:100%;overflow-x:hidden}
+.app,main,.panel{max-width:100%;min-width:0;overflow-x:hidden}
+main{padding-bottom:190px!important}
+.alert-product{border:1px solid var(--line);border-radius:17px;padding:12px;background:#fff;margin:8px 0}
+.alert-product.critical{background:#fff0ef;border-color:#efc7c3}
+.alert-product.low{background:#fff8e8;border-color:#f0dfb9}
+.alert-product .alert-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.alert-product .alert-head b{font-size:14px}
+.alert-product .branches{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.alert-product .branches span{font-size:10px;padding:5px 8px;border-radius:999px;background:#fff;border:1px solid #e8e2dc}
+.alert-product .suggestion{font-size:11px;line-height:1.6;color:#666;margin-top:6px}
+.action-now{display:grid;gap:8px}
+.action-now .item{border-right:4px solid #d4921f}
+.action-now .item.critical{border-right-color:#c53b32;background:#fff6f5}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -224,6 +617,8 @@ main{padding-left:10px;padding-right:10px}.hero{padding:14px}.hero h1{font-size:
   <canvas id="chart" width="520" height="150"></canvas>
   <div class="section-title">ملخص ذكي</div>
   <div id="smartSummary" class="alert green"></div>
+  <div class="section-title">يحتاج إجراء الآن</div>
+  <div id="actionNow" class="action-now"></div>
   <div class="section-title">سجل العمليات</div>
   <div id="operationLog" class="list"></div>
   <div class="section-title">إدارة المنتجات والمخزون</div>
@@ -410,6 +805,15 @@ function copyReply(id){
 function openTransfer(){fillTransferProducts();openModal("transferModal")}
 function prefillTransfer(id){fillTransferProducts();transferProduct.value=id;openModal("transferModal")}
 function fillTransferProducts(){transferProduct.innerHTML=products.map(p=>`<option value="${p.id}">${p.name} — ${p.sku}</option>`).join("")}
+function prefillSmartTransfer(id,from,to,qty){
+ fillTransferProducts();
+ transferProduct.value=id;
+ fromBranch.value=from;
+ toBranch.value=to;
+ transferQty.value=Math.max(1,Number(qty||1));
+ openModal("transferModal");
+}
+
 function saveTransfer(){
  let pid=+transferProduct.value,from=fromBranch.value,to=toBranch.value,qty=Math.max(1,+transferQty.value||1);
  if(from===to){toast("اختاري فرعين مختلفين");return}
@@ -427,14 +831,40 @@ function completeTransfer(id){
  let p=products.find(x=>x.sku===t.sku); if(p.stock[t.from]<t.qty){toast("المخزون تغير ولا يكفي");return}
  p.stock[t.from]-=t.qty;p.stock[t.to]+=t.qty;t.status="مكتمل";logOperation("إكمال تحويل",t.product,`${t.from} ← ${t.to}`,`${t.qty} قطعة`);saveAll();toast("تم تحديث مخزون الفرعين");
 }
+function getProductAlert(p){
+ let threshold=Number(p.lowThreshold??3);
+ let affected=BR.map(b=>({branch:b,qty:Number(p.stock[b]||0)})).filter(x=>x.qty<=threshold);
+ if(!affected.length)return null;
+ affected.sort((a,b)=>a.qty-b.qty);
+ let target=affected[0];
+ let sources=BR.map(b=>({branch:b,qty:Number(p.stock[b]||0)}))
+   .filter(x=>x.branch!==target.branch && x.qty>threshold)
+   .sort((a,b)=>b.qty-a.qty);
+ let source=sources[0]||null;
+ let qty=source?Math.max(1,Math.min(3,source.qty-threshold,Math.max(1,threshold-target.qty))):0;
+ return {p,threshold,affected,target,source,qty,critical:affected.some(x=>x.qty===0),min:affected[0].qty};
+}
+
 function renderAlerts(){
+ let rows=products.map(getProductAlert).filter(Boolean)
+   .sort((a,b)=>(b.critical-a.critical)||(a.min-b.min)||a.p.name.localeCompare(b.p.name,"ar"));
  alertsList.innerHTML="";
- products.forEach(p=>BR.forEach(b=>{
-  let n=p.stock[b];
-  if(n===0) alertsList.innerHTML+=`<div class="alert red"><b>${p.name}</b><br>غير متوفر في فرع ${b}. يوجد ${total(p)-n} قطعة في الفروع الأخرى.</div>`;
-  else if(n<=2) alertsList.innerHTML+=`<div class="alert"><b>${p.name}</b><br>باقي ${n} فقط في فرع ${b}. يفضّل إعادة التعبئة أو التحويل.</div>`;
- }));
- if(!alertsList.innerHTML)alertsList.innerHTML="<div class='alert green'>لا توجد تنبيهات حرجة حاليًا.</div>";
+ if(!rows.length){
+   alertsList.innerHTML="<div class='alert green'>لا توجد تنبيهات حرجة حاليًا.</div>";
+   return;
+ }
+ rows.forEach(a=>{
+   let chips=a.affected.map(x=>`<span>${x.branch}: ${x.qty===0?"نفد":x.qty+" فقط"}</span>`).join("");
+   let suggestion=a.source
+     ? `<div class="suggestion"><b>اقتراح:</b> تحويل ${a.qty} من ${a.source.branch} إلى ${a.target.branch}.</div>
+        <div class="actions"><button class="btn outline" onclick="prefillSmartTransfer(${a.p.id},'${a.source.branch}','${a.target.branch}',${a.qty})">إنشاء تحويل مقترح</button></div>`
+     : `<div class="suggestion">لا يوجد فرع بفائض كافٍ حاليًا؛ يفضّل إعادة التعبئة.</div>`;
+   alertsList.innerHTML+=`<div class="alert-product ${a.critical?"critical":"low"}">
+     <div class="alert-head"><b>${a.p.name}</b><span class="pill">${a.critical?"نفاد":"منخفض"}</span></div>
+     <div class="branches">${chips}</div>
+     ${suggestion}
+   </div>`;
+ });
 }
 
 
@@ -497,33 +927,40 @@ function adjustStockDirect(id,branch,delta){
 
 function renderProductManager(){
  let box=document.getElementById("productManager"); if(!box)return;
+ box.style.display="flex";
+ box.style.flexDirection="column";
+ box.style.gap="12px";
+ box.style.width="100%";
+ box.style.minWidth="0";
+
  box.innerHTML=products.map(p=>{
-  let total=Object.values(p.stock).reduce((a,b)=>a+Number(b||0),0);
-  let threshold=(p.lowThreshold??3);
-  let branches=Object.entries(p.stock).map(([br,q])=>{
+  let threshold=Number(p.lowThreshold??3);
+  let total=Object.values(p.stock||{}).reduce((a,b)=>a+Number(b||0),0);
+  let branches=Object.entries(p.stock||{}).map(([br,q])=>{
    let nq=Number(q||0);
-   let cls=nq===0?"zero":nq<=threshold?"low":"";
-   return `<div class="admin-branch-box ${cls}">
-     <div class="admin-branch-name">${br}</div>
-     <div class="admin-branch-qty">
-       <button type="button" onclick="adjustStockDirect(${p.id},'${br}',-1)">−</button>
-       <strong>${nq}</strong>
-       <button type="button" onclick="adjustStockDirect(${p.id},'${br}',1)">+</button>
-     </div>
-   </div>`;
-  }).join("");
-  return `<div class="card admin-product-card">
-    <div class="admin-product-head">
-      <div class="admin-product-title">
-        <h3>${p.name}</h3>
-        <div class="admin-product-meta">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${threshold}</div>
+   let bg=nq===0?"#fff0ef":nq<=threshold?"#fff8e8":"#fafafa";
+   return `<div style="display:grid;grid-template-columns:minmax(90px,1fr) minmax(155px,1.45fr);align-items:center;gap:10px;width:100%;min-width:0;border:1px solid #e7e2db;border-radius:16px;padding:10px 12px;background:${bg}">
+      <div style="font-size:14px;line-height:1.35;color:#666;text-align:right;white-space:normal">${br}</div>
+      <div style="display:grid;grid-template-columns:42px minmax(34px,1fr) 42px;align-items:center;gap:8px;direction:ltr;width:100%;min-width:0">
+        <button type="button" onclick="adjustStockDirect(${p.id},'${br}',-1)" style="width:42px;height:42px;padding:0;border:1px solid #ddd;border-radius:12px;background:#fff;color:#2878f0;font-size:24px;font-weight:700;line-height:1">−</button>
+        <strong style="font-size:21px;text-align:center;line-height:1">${nq}</strong>
+        <button type="button" onclick="adjustStockDirect(${p.id},'${br}',1)" style="width:42px;height:42px;padding:0;border:1px solid #ddd;border-radius:12px;background:#fff;color:#2878f0;font-size:24px;font-weight:700;line-height:1">+</button>
       </div>
-      <span class="sku">${p.sku}</span>
+    </div>`;
+  }).join("");
+
+  return `<div style="display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;border:1px solid #e7e2db;border-radius:20px;padding:14px;background:#fff;overflow:hidden">
+    <div style="display:flex;flex-direction:column;width:100%;min-width:0;gap:6px;margin-bottom:12px">
+      <h3 style="display:block;width:100%;max-width:100%;margin:0;font-size:20px;line-height:1.4;white-space:normal;overflow-wrap:anywhere;word-break:normal;text-align:right">${p.name}</h3>
+      <div style="font-size:12px;line-height:1.6;color:#777;white-space:normal;overflow-wrap:anywhere;text-align:right">${p.cat} • ${Number(p.price).toLocaleString("ar-IQ")} د.ع • إجمالي ${total} • حد التنبيه ${threshold}</div>
+      <div style="align-self:flex-start;display:inline-flex;max-width:100%;padding:5px 9px;border-radius:999px;background:#f3f3f3;font-size:11px;direction:ltr;white-space:nowrap">${p.sku}</div>
     </div>
-    <div class="admin-product-stock">${branches}</div>
-    <div class="admin-product-actions">
-      <button class="btn outline" onclick="openProductEditor(${p.id})">تعديل</button>
-      <button class="btn danger" onclick="deleteProduct(${p.id})">حذف</button>
+
+    <div style="display:flex;flex-direction:column;gap:8px;width:100%;min-width:0">${branches}</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;margin-top:12px">
+      <button class="btn outline" onclick="openProductEditor(${p.id})" style="width:100%;min-height:44px;margin:0">تعديل</button>
+      <button class="btn danger" onclick="deleteProduct(${p.id})" style="width:100%;min-height:44px;margin:0">حذف</button>
     </div>
   </div>`;
  }).join("");
@@ -632,10 +1069,33 @@ function dashboard(){
  let pending=reservations.filter(x=>x.status!=="تم الاستلام").length;
  let top={};reservations.forEach(x=>top[x.branch]=(top[x.branch]||0)+1);let topB=Object.keys(top).sort((a,b)=>top[b]-top[a])[0]||"لا بيانات";
  smartSummary.textContent=`يوجد ${pending} حجز بانتظار الاستلام. أكثر فرع نشاطًا في بيانات الديمو: ${topB}. ويوجد ${lowCount()} حالة مخزون منخفض أو صفر عبر الفروع.`;
+ renderActionNow();
  renderOperationLog();
  renderProductManager();
  drawChart();
 }
+function renderActionNow(){
+ let box=document.getElementById("actionNow"); if(!box)return;
+ let items=[];
+ products.map(getProductAlert).filter(Boolean).forEach(a=>{
+   items.push({
+     priority:a.critical?0:1,
+     cls:a.critical?"critical":"",
+     title:a.critical?`نفاد: ${a.p.name}`:`مخزون منخفض: ${a.p.name}`,
+     detail:a.affected.map(x=>`${x.branch} ${x.qty}`).join(" • ")
+   });
+ });
+ let pending=reservations.filter(x=>x.status!=="تم الاستلام");
+ if(pending.length)items.push({priority:2,cls:"",title:`${pending.length} حجز بانتظار الاستلام`,detail:"راجع صفحة الحجوزات لإكمال أو إلغاء الحجوزات."});
+ let openT=transfers.filter(x=>x.status!=="مكتمل");
+ if(openT.length)items.push({priority:2,cls:"",title:`${openT.length} تحويل مفتوح`,detail:"راجع صفحة التحويلات لإكمال الطلبات."});
+ items.sort((a,b)=>a.priority-b.priority);
+ box.innerHTML=items.length?"":"<div class='alert green'>لا توجد إجراءات عاجلة حاليًا.</div>";
+ items.slice(0,5).forEach(i=>{
+   box.innerHTML+=`<div class="item ${i.cls}"><b>${i.title}</b><div class="note">${i.detail}</div></div>`;
+ });
+}
+
 function renderOperationLog(){
  let box=document.getElementById("operationLog");
  if(!box)return;
