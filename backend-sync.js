@@ -1,6 +1,9 @@
 (() => {
   const cfg = window.BRANCH_FLOW_BACKEND || {};
-  let applying = false, timer = null, lastUpdated = null;
+  let applying = false, timer = null, lastUpdated = null;Object.defineProperty(window,"products",{get:()=>products,set:v=>products=v});
+Object.defineProperty(window,"reservations",{get:()=>reservations,set:v=>reservations=v});
+Object.defineProperty(window,"transfers",{get:()=>transfers,set:v=>transfers=v});
+Object.defineProperty(window,"operations",{get:()=>operations,set:v=>operations=v});
 
   const ok = () => cfg.supabaseUrl && cfg.anonKey;
   const headers = (extra={}) => ({
